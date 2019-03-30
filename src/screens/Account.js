@@ -21,19 +21,15 @@ export default class Account extends Component {
   // next: add code for rendering the component
   render() {
    const { navigation } = this.props;
-   const name = navigation.getParam("name");
-   const picture = navigation.getParam("picture");
 
    return (
      <View style={styles.container}>
-       {name && (
-         <View style={styles.profileContainer}>
-           <Image style={styles.picture} source={{ uri: picture }} />
 
-           <Text style={styles.usernameText}>{name}</Text>
+         <View style={styles.profileContainer}>
+
            <Button onPress={this.logout} title="Logout" color='pink' />
          </View>
-       )}
+
      </View>
    );
  }

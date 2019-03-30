@@ -14,7 +14,7 @@ const auth0 = new Auth0({
 });
 
 export default class Login extends Component {
-  static navigationOptions = ({nvigation}) => {
+  static navigationOptions = ({navigation}) => {
     headerTitle: "Login"
   }
 
@@ -42,6 +42,7 @@ export default class Login extends Component {
                   RNRestart.Restart();
                 })
                 .catch(accessTokenErr => {
+                  this.login()
                   console.log("error getting new accessToken: ", accessTokenErr)
                 })
             })
@@ -78,11 +79,15 @@ export default class Login extends Component {
         prompt: "login"
       })
       .then(res => {
+        console.log(' i am tje res')
+        console.log(res)
         auth0.auth
           .userInfo({token: res.accessToken})
           .then(data => {
-
+            this.createUser(data);
             this.gotoAccount(data);
+            console.log(data)
+
           })
           .catch(err => {
             console.log("err: ");
@@ -92,45 +97,6 @@ export default class Login extends Component {
         SInfo.setItem("accessToken", res.accessToken, {});
         SInfo.setItem("refreshToken", res.refreshToken, {});
 
-        // fetch('https://www.memender.io/api/users', {
-        //   method: 'POST',
-        //   headers: new Headers({
-        //     'Content-Type': 'application/json'
-        //   }),
-        //   cache: 'default',
-        //   body: JSON.stringify({
-        //     displayName: 'helllo',
-        //     email: 'test@gmai.com',
-        //     password: 'Roller12!'
-        //   })
-        // })
-        // .then( r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
-        // .then(response => {
-        //   if (!response.ok || response.status !== 201){
-        //     throw new Error(response.json.message)
-        //   }
-        // })
-        // .catch(error => {
-        //   console.log(error)
-        // })
-
-        fetch('https://www.memender.io/api/sessions', {
-          method: 'POST',
-          header: new Headers({
-            'Content-Type': 'application/json'
-          }),
-          cache: 'default',
-          body: JSON.stringify({
-            email: 'test@gmai.com',
-            password: 'Roller12!'
-          })
-        })
-        .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json})))
-        .then(response => {
-          if (!response.ok || response.status !== 201) {
-            throw new Error(response.json.message)
-          }
-        })
       })
       .catch(error => {
         console.log("Error while trying to authenticate", error);
@@ -146,7 +112,7 @@ export default class Login extends Component {
       index: 0,
       actions: [
         NavigationActions.navigate({
-          routeName: "Account",
+          routeName: "Home",
           params: {
             name: data.name,
             picture: data.picture
@@ -155,6 +121,32 @@ export default class Login extends Component {
       ]
     });
     this.props.navigation.dispatch(resetAction);
+  }
+
+  createUser = data => {
+    console.log('hi from createuser')
+    fetch('http://192.168.0.19:3000/api/users', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      cache: 'default',
+      body: JSON.stringify({
+        userSub: data.sub,
+        nickname: data.nickname,
+        picture: data.picture,
+
+      })
+    })
+    .then( r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+    .then(response => {
+      if (!response.ok || response.status !== 201){
+        throw new Error(response.json.message)
+      }
+    })
+    .catch(error => {
+      console.log(error)
+    })
   }
 
 }
