@@ -8,6 +8,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "cloudinary-core": "^2.6.2",
     "expo": "^32.0.6",
     "react": "16.8.3",
     "react-native": "0.59.2",
@@ -18,9 +19,16 @@
     "react-native-fetch-blob": "^0.10.8",
     "react-native-gesture-handler": "^1.1.0",
     "react-native-image-picker": "^0.28.1",
+    "react-native-pinch-zoom-view": "^0.2.0",
+    "react-native-responsive-screen": "^1.2.1",
     "react-native-restart": "0.0.9",
     "react-native-sensitive-info": "^5.3.0",
-    "react-navigation": "^3.5.1"
+    "react-native-vector-icons": "^6.4.2",
+    "react-navigation": "^3.5.1",
+    "react-redux": "^6.0.1",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",

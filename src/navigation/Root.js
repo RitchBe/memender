@@ -1,20 +1,14 @@
 import React from "react";
 import {StackNavigator, createStackNavigator,createAppContainer, createDrawerNavigator} from "react-navigation";
 
-import LoginScreen from './src/screens/Login';
-import AccountScreen from './src/screens/Account';
-import HomeScreen from './src/screens/Home';
+import LoginScreen from '../screens/Login';
+import UploadedScreen from '../screens/Uploaded';
+import HomeScreen from '../screens/Home';
 
 const Stack = createStackNavigator(
   {
     Login: {
       screen: LoginScreen
-    },
-    Account: {
-      screen: AccountScreen
-    },
-    Home: {
-      screen: HomeScreen
     }
   },
   {
@@ -22,5 +16,5 @@ const Stack = createStackNavigator(
   }
 );
 
-// export default createDrawerNavigator(Stack);
+
 export default createAppContainer(Stack);

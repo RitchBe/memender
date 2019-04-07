@@ -6,6 +6,7 @@ import Config from "react-native-config";
 import DeviceInfo from "react-native-device-info";
 import SInfo from "react-native-sensitive-info";
 import RNRestart from "react-native-restart";
+import {connect} from 'react-redux';
 
 
 const auth0 = new Auth0({
@@ -13,7 +14,7 @@ const auth0 = new Auth0({
   clientId: Config.AUTH0_CLIENT_ID
 });
 
-export default class Login extends Component {
+class Login extends Component {
   static navigationOptions = ({navigation}) => {
     headerTitle: "Login"
   }
@@ -30,20 +31,20 @@ export default class Login extends Component {
         auth0.auth
           .userInfo({token: accessToken})
           .then(data => {
-            this.gotoAccount(data);
-            console.log(data)
+            this.props.userConnect(data.sub)
           })
           .catch(err => {
             SInfo.getItem("refreshToken", {}).then(refreshToken => {
               auth0.auth
                 .refreshToken({refreshToken: refreshToken})
                 .then(newAccessToken => {
-                  SInfo.setItem('accessToken', newAccessToken);
-                  RNRestart.Restart();
+                  SInfo.setItem('accessToken', newAccessToken.accessToken, {});
+
                 })
                 .catch(accessTokenErr => {
                   this.login()
                   console.log("error getting new accessToken: ", accessTokenErr)
+                  this.props.userNotConnected();
                 })
             })
           })
@@ -51,6 +52,7 @@ export default class Login extends Component {
         this.setState({
           hasInitialized: true
         });
+        this.props.userNotConnected();
       }
     })
   }
@@ -85,13 +87,13 @@ export default class Login extends Component {
           .userInfo({token: res.accessToken})
           .then(data => {
             this.createUser(data);
-            this.gotoAccount(data);
-            console.log(data)
-
+            RNRestart.Restart()
+            this.props.userConnect(data.sub)
           })
           .catch(err => {
             console.log("err: ");
             console.log(JSON.stringify(err));
+            this.props.userNotConnected();
           });
 
         SInfo.setItem("accessToken", res.accessToken, {});
@@ -100,32 +102,13 @@ export default class Login extends Component {
       })
       .catch(error => {
         console.log("Error while trying to authenticate", error);
+        this.props.userNotConnected();
       });
   };
 
-  gotoAccount = data => {
-    this.setState({
-      hasInitialized: true
-    });
-
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({
-          routeName: "Home",
-          params: {
-            name: data.name,
-            picture: data.picture
-          }
-        })
-      ]
-    });
-    this.props.navigation.dispatch(resetAction);
-  }
-
   createUser = data => {
     console.log('hi from createuser')
-    fetch('http://192.168.0.19:3000/api/users', {
+    fetch('https://www.memender.io/api/users', {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json'
@@ -141,15 +124,32 @@ export default class Login extends Component {
     .then( r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
     .then(response => {
       if (!response.ok || response.status !== 201){
+        console.log('ok')
         throw new Error(response.json.message)
       }
     })
     .catch(error => {
       console.log(error)
+      console.log('not working')
     })
   }
-
 }
+
+function mapStateToProps(state){
+  return {
+    userIsLogged: state.userIsLogged
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    userConnect: (sub) => dispatch({type: 'USER_CONNECT', sub}),
+    userNotConnected: () => dispatch({type: 'USER_NOT_CONNECTED'}),
+    getMemes: () => dispatch({type: 'GET_MEMES'}),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
 
 const styles = StyleSheet.create({
 
