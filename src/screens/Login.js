@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, Button, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Text, Button, ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native";
 import { NavigationActions, StackActions } from "react-navigation";
 import Auth0 from "react-native-auth0";
 import Config from "react-native-config";
@@ -15,9 +15,9 @@ const auth0 = new Auth0({
 });
 
 class Login extends Component {
-  static navigationOptions = ({navigation}) => {
-    headerTitle: "Login"
-  }
+  // static navigationOptions = ({navigation}) => {
+  //   headerTitle: "Login"
+  // }
 
   state = {
     hasInitialized: false
@@ -60,13 +60,17 @@ class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ActivityIndicator
+        {/* <ActivityIndicator
           size="large"
           color="#05a5d1"
           animation={!this.state.hasInitialized}
-        />
+        /> */}
         {this.state.hasInitialized && (
-          <Button onPress={this.login} title="Login" color='pink'/>
+
+          <TouchableOpacity style={styles.btnContainer} onPress={this.login}>
+            <Text style={styles.btnText}>Login</Text>
+          </TouchableOpacity>
+
         )}
       </View>
     )
@@ -108,7 +112,7 @@ class Login extends Component {
 
   createUser = data => {
     console.log('hi from createuser')
-    fetch('https://www.memender.io/api/users', {
+    fetch('http://192.168.0.19:3000/api/users', {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json'
@@ -152,5 +156,25 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Login)
 
 const styles = StyleSheet.create({
-
+  container: {
+    flex: 1,
+    backgroundColor: '#E8EAF6',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  btnContainer:{
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  btnText: {
+    color: 'rgb(240,240,240)',
+    backgroundColor: '#9FA8DA',
+    paddingHorizontal: 8,
+    paddingVertical: 9,
+    width: 110,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    borderRadius: 8,
+    fontSize: 17,
+  }
 })

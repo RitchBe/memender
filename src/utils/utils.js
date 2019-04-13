@@ -30,7 +30,7 @@ import RNRestart from "react-native-restart";
 
 
 export function vote(upOrDown, meme, userSub) {
-      fetch('https://www.memender.io/api/memes/' + meme._id + '/' + upOrDown, {
+      fetch('http://192.168.0.19:3000/api/memes/' + meme._id + '/' + upOrDown, {
             method: 'PUT',
             headers: new Headers({
               'Content-Type': 'application/json',
@@ -38,7 +38,8 @@ export function vote(upOrDown, meme, userSub) {
             }),
             cache: 'default',
             body: JSON.stringify({
-              memeId: meme._id
+              memeId: meme._id,
+              userSub: userSub
             })
           })
           .then( r => r.json().then(json => ({ok: r.ok, status: r.status, json})))
@@ -50,6 +51,28 @@ export function vote(upOrDown, meme, userSub) {
           .catch(error => {
             console.log(error)
           })
+
+      // fetch('http://192.168.0.19:3000/api/memes/' + meme._id + '/createrelation', {
+      //   method: 'POST',
+      //   headers: new Headers({
+      //     'Content-Type': "application/json",
+      //     'x-auth': userSub
+      //   }),
+      //   cache: 'default',
+      //   body: JSON.stringify({
+      //     memeId: meme._id,
+      //     userSub: userSub
+      //   })
+      // })
+      // .then( r => r.json().then(json => ({ok: r.ok, status: r.status, json})))
+      // .then(response => {
+      //   if (!response.ok || response.status !== 200){
+      //     throw new Error(response.json.message)
+      //   }
+      // })
+      // .catch(error => {
+      //   console.log(error)
+      // })
         }
 
 

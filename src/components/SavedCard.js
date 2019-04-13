@@ -20,8 +20,8 @@ export default class SavedCard extends Component {
   }
 
   handleDelete = () => {
-    // const {onDelete, item} = this.props;
-    // onDelete(item);
+    const {onDelete, item} = this.props;
+    onDelete(item);
     console.log('Delete this saved memes')
   }
 

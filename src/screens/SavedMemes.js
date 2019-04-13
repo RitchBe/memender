@@ -52,7 +52,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
   )
 
   fetchSavedMemes = () => {
-    fetch('https://www.memender.io/api/users/' + this.props.userSub + '/savedmemes', {
+    fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes', {
       method: 'GET',
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -77,7 +77,23 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
   }
 
   deleteSavedMeme = (meme) => {
-    console.log('you will be deleted')
+    fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes/' + meme.memeId, {
+      method: 'DELETE',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        'authorization': this.props.userSub,
+      }),
+      cache: 'default'
+    })
+    .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+    .then(response => {
+      if (!response || response.status !== 200) {
+        throw new Error(response.json.message)
+      }
+      this.setState({
+        savedMemes: this.state.savedMemes.filter(x => x.memeId !== meme.memeId)
+      })
+    })
   }
 
   componentDidMount() {
@@ -91,7 +107,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
     const {savedMemes} = this.state;
     return (
       <View style={styles.savedMemesContainer}>
-        <Header onOpenDrawer={this.openDrawer} />
+        <Header onOpenDrawer={this.openDrawer} saved={true} />
         <FlatList
           style={{flex: 1}}
           data= {savedMemes}

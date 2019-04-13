@@ -41,7 +41,8 @@ class Home extends Component {
   };
 
   state= {
-    memesTest: []
+    memesTest: [],
+    order: 'random'
   }
 
   handleShare = currentMemes => {
@@ -95,7 +96,7 @@ class Home extends Component {
         auth0.auth
           .userInfo({token: accessToken})
           .then(data => {
-            fetch('https://www.memender.io/api/memes/', {
+            fetch('http://192.168.0.19:3000/api/memes/', {
               method: 'POST',
               headers: new Headers({
                 'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ class Home extends Component {
 
    console.log(' i am the sub from reducer');
    console.log(this.props.userSub)
-    fetch('https://www.memender.io/api/memes/', {
+    fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub, {
       method: 'GET',
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -136,6 +137,8 @@ class Home extends Component {
       if (!response || response.status !== 200){
         throw new Error(response.json.message)
       }
+      console.log('i am reponsee')
+      console.log(response)
        response.json.map((meme) => (
         this.setState({
           memesTest: [...this.state.memesTest, meme],
@@ -157,6 +160,58 @@ class Home extends Component {
     this.fetchMemes()
   }
 
+  getSortedMeme = (order) => {
+    fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub + '/' + order , {
+      method: 'GET',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        'authorization': this.props.userSub,
+      }),
+      cache: 'default'
+    })
+    .then(r => r.json().then(json => ({pk: r.ok, status: r.status, json: json})))
+    .then(response => {
+      if (!response || response.status !== 200) {
+        throw Error(response.json.message)
+      }
+      console.log('state')
+      console.log(this.state.memesTest)
+      console.log('i am the response')
+      console.log(response)
+      response.json.map((meme) => (
+
+        this.setState({
+          memesTest: [...this.state.memesTest, meme]
+        })
+      ))
+
+    })
+  }
+
+  sortMemes = (order) => {
+    if (order === "random") {
+      this.setState({order: 'random'})
+      this.setState({memesTest: []})
+
+      this.fetchMemes();
+    }
+    else if (order === "bestOfAllTime") {
+      this.setState({memesTest: []})
+      this.setState({order: "bestOfAllTime"})
+      this.getSortedMeme('bestofalltime')
+    }
+    else if (order === "monthlyBest") {
+      this.setState({memesTest: []})
+      this.setState({order: "monthlyBest"})
+      this.getSortedMeme('monthlybest')
+    }
+    else if (order === "weeklyBest") {
+      this.setState({memesTest: []})
+      this.setState({order: "weeklyBest"})
+      this.getSortedMeme('weeklybest')
+    }
+  }
+
 
 
 openDrawer = () => {
@@ -169,7 +224,7 @@ openDrawer = () => {
 
     return (
       <View style={styles.container}>
-      <Header onOpenDrawer={this.openDrawer}/>
+      <Header onOpenDrawer={this.openDrawer} home={true} sortMemes={(order) => {this.sortMemes(order)}}/>
 
 
         <CardStack style={styles.content} renderNoMoreCards={() => <Text style={{
@@ -194,15 +249,18 @@ openDrawer = () => {
            style={[styles.card, styles.card1]}
            onSwipedRight={() => {
              console.log(meme._id)
-             this.checkCountMemes(meme, index)
-
+             if (this.state.order == 'random') {
+               this.checkCountMemes(meme, index)
+           }
              vote('upvote', meme, this.props.userSub)
 
            }
          }
            onSwipedLeft={() => {
              console.log(meme._id)
-             this.checkCountMemes(meme, index)
+             if (this.state.order == 'random') {
+               this.checkCountMemes(meme, index)
+           }
 
              vote('downvote', meme, this.props.userSub)
            }}
@@ -210,11 +268,9 @@ openDrawer = () => {
             <View style={styles.saveWrapper} >
               <SaveIcon userSub={this.props.userSub} meme={meme}/>
             </View>
-       <PinchZoomView minScale={1} maxScale={3}>
          <View style={{flex: 1}}>
            <Image style={styles.images} source={{uri: meme.url}}/>
          </View>
-         </PinchZoomView>
 
           <View style={styles.votesContainer}>
          <View style={styles.votes}>
@@ -315,6 +371,7 @@ const styles = StyleSheet.create({
     flex: 5,
     backgroundColor: '#FE474C',
     borderRadius: 5,
+    zIndex: 0
   },
   card1: {
     backgroundColor: 'white'

@@ -14,13 +14,9 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 
 
 export default class UserCard extends PureComponent {
-  constructor(props) {
-    super(props)
-  }
 
   handleDelete = () => {
-    const {onDelete, item} = this.props;
-    onDelete(item);
+    this.props.onDelete(this.props.item);
   }
 
   render() {

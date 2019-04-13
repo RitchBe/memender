@@ -43,7 +43,7 @@ class Uploaded extends Component {
 
   fetchUserMemes = () => {
     const {userMemes} = this.state;
-      fetch('https://www.memender.io/api/users/' + this.props.userSub + '/memes', {
+      fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes', {
               method: 'GET',
               headers: new Headers({
                 'Content-Type': 'application/json',
@@ -56,8 +56,7 @@ class Uploaded extends Component {
               if (!response || response.status !== 200){
                 throw new Error(response.json.message)
               }
-              console.log('i am the response')
-              console.log(response)
+
               response.json.map((meme) => (
                 this.setState({
                   userMemes: [...this.state.userMemes, meme],
@@ -68,6 +67,8 @@ class Uploaded extends Component {
 
     fetchMore = () => {
       const {userMemes} = this.state;
+      console.log('begining')
+      console.log(this.state.userMemes)
       if (!this.state.fetching_from_server && !this.state.isListEnd) {
 
           if (userMemes.length % 10 === 0 && userMemes.length !== 0) {
@@ -76,7 +77,7 @@ class Uploaded extends Component {
             console.log('gettinh meme')
             console.log(userMemes.length)
 
-            fetch('https://www.memender.io/api/users/' + this.props.userSub + '/memes?next=' + userMemes[userMemes.length-1]._id, {
+            fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes?next=' + userMemes[userMemes.length -1]._id, {
               method: 'GET',
               headers: new Headers({
                 'Content-Type': 'application/json',
@@ -89,14 +90,20 @@ class Uploaded extends Component {
               if (!response || response.status !== 200){
                 throw new Error(response.json.message)
               }
-              response.json.map((meme) => (
-                this.setState({
-                  userMemes: [ ...this.state.userMemes, meme],
+              console.log('and the response')
+              console.log(response)
+              response.json.map((meme) => {
+                if (meme._id === userMemes[userMemes.length -1]._id) {
+                  return
+                }
+                this.setState( {
+                  userMemes: [...this.state.userMemes, meme],
                   fetching_from_server: false,
                   isListEnd: false
 
                 })
-              ))
+              }
+            )
             })
           })
 
@@ -112,7 +119,7 @@ class Uploaded extends Component {
     }
 
   deleteMeme = (meme) => {
-    fetch('https://www.memender.io/api/users/' + this.props.userSub + '/memes/' + meme._id, {
+    fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes/' + meme._id, {
       method: 'DELETE',
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -153,17 +160,19 @@ class Uploaded extends Component {
 
    return (
      <View style={styles.list}>
-    <Header onOpenDrawer={this.openDrawer} />
+    <Header onOpenDrawer={this.openDrawer} upladed={true}/>
 
       <FlatList
         style={{flex: 1}}
-        data={userMemes}
+        data={this.state.userMemes}
+        extraData={this.state}
         renderItem = {this.renderItem}
         keyExtractor={meme => meme._id}
         showsVerticalScrollIndicator={false}
-        onEndReached={() => this.fetchMore()}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.1}
+        onEndReached={this.fetchMore}
         ListFooterComponent={this.renderFooter}
+        initialNumToRender={10}
       />
 
      </View>
