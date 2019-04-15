@@ -67,17 +67,13 @@ class Uploaded extends Component {
 
     fetchMore = () => {
       const {userMemes} = this.state;
-      console.log('begining')
-      console.log(this.state.userMemes)
+      console.log(userMemes.length)
       if (!this.state.fetching_from_server && !this.state.isListEnd) {
 
           if (userMemes.length % 10 === 0 && userMemes.length !== 0) {
             this.setState({fetching_from_server: true}, () => {
-
-            console.log('gettinh meme')
-            console.log(userMemes.length)
-
-            fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes?next=' + userMemes[userMemes.length -1]._id, {
+            console.log('should be here')
+            fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes?next=' + userMemes[userMemes.length -1].date, {
               method: 'GET',
               headers: new Headers({
                 'Content-Type': 'application/json',
@@ -93,14 +89,9 @@ class Uploaded extends Component {
               console.log('and the response')
               console.log(response)
               response.json.map((meme) => {
-                if (meme._id === userMemes[userMemes.length -1]._id) {
-                  return
-                }
                 this.setState( {
                   userMemes: [...this.state.userMemes, meme],
                   fetching_from_server: false,
-                  isListEnd: false
-
                 })
               }
             )
@@ -110,11 +101,11 @@ class Uploaded extends Component {
           }
       } else {
         this.setState({
-          fetching_from_server: false,
-          isListEnd: true
+          fetching_from_server: true,
+          isListEnd: false
         })
       }
-      console.log(this.state.fetching_from_server)
+
 
     }
 
@@ -147,7 +138,7 @@ class Uploaded extends Component {
   }
   renderFooter = () => {
     if (this.state.fetching_from_server === true) {
-      return <ActivityIndicator color="black" style={{margin: 100}} size="large" />
+      return <ActivityIndicator color="#9FA8DA" style={{margin: 100}} size="large" />
     } else {
       return null;
     }
@@ -169,7 +160,7 @@ class Uploaded extends Component {
         renderItem = {this.renderItem}
         keyExtractor={meme => meme._id}
         showsVerticalScrollIndicator={false}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={0.5}
         onEndReached={this.fetchMore}
         ListFooterComponent={this.renderFooter}
         initialNumToRender={10}
