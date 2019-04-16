@@ -31,7 +31,7 @@ import SaveIcon from '../components/SaveIcon'
 
 
 const memeKeyExtractor= meme => meme.memeId
-var count = 0;
+
 
 class Home extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -42,7 +42,9 @@ class Home extends Component {
 
   state= {
     memesTest: [],
-    order: 'random'
+    order: 'random',
+    countBest: 1,
+    count: 0
   }
 
   handleShare = currentMemes => {
@@ -121,7 +123,6 @@ class Home extends Component {
   }
 
  fetchMemes = () => {
-
    console.log(' i am the sub from reducer');
    console.log(this.props.userSub)
     fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub, {
@@ -148,10 +149,26 @@ class Home extends Component {
   }
 
   checkCountMemes = (meme, index) => {
-    count += 1;
-    if (count === 3) {
-      this.fetchMemes();
-      count = 0
+    const {count, countBest} = this.state
+    if (this.state.order === "random"){
+      this.setState({
+        count: count + 1,
+      })
+      if (count === 3) {
+        this.fetchMemes();
+        this.setState({
+          count: 0,
+        })
+      }
+    } else {
+      console.log(countBest)
+      this.setState({
+        countBest: countBest + 1
+      })
+      if (countBest % 5 === 0 && countBest > 0 ) {
+        console.log('while take some new now')
+        this.getSortedMeme(this.state.order);
+      }
     }
   }
 
@@ -161,7 +178,7 @@ class Home extends Component {
   }
 
   getSortedMeme = (order) => {
-    fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub + '/' + order , {
+    fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub + '/' + order + '?next=' + this.state.countBest, {
       method: 'GET',
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -174,17 +191,12 @@ class Home extends Component {
       if (!response || response.status !== 200) {
         throw Error(response.json.message)
       }
-      console.log('state')
-      console.log(this.state.memesTest)
-      console.log('i am the response')
       console.log(response)
       response.json.map((meme) => (
-
         this.setState({
           memesTest: [...this.state.memesTest, meme]
         })
       ))
-
     })
   }
 
@@ -196,18 +208,27 @@ class Home extends Component {
       this.fetchMemes();
     }
     else if (order === "bestOfAllTime") {
-      this.setState({memesTest: []})
-      this.setState({order: "bestOfAllTime"})
+      this.setState({
+        memesTest: [],
+        order: "bestOfAllTime",
+        countBest: 1
+      })
       this.getSortedMeme('bestofalltime')
     }
     else if (order === "monthlyBest") {
-      this.setState({memesTest: []})
-      this.setState({order: "monthlyBest"})
+      this.setState({
+        memesTest: [],
+        order: "monthlyBest",
+        countBest: 1
+      })
       this.getSortedMeme('monthlybest')
     }
     else if (order === "weeklyBest") {
-      this.setState({memesTest: []})
-      this.setState({order: "weeklyBest"})
+      this.setState({
+        memesTest: [],
+        order: "weeklyBest",
+        countBest: 1
+      })
       this.getSortedMeme('weeklybest')
     }
   }
@@ -249,18 +270,18 @@ openDrawer = () => {
            style={[styles.card, styles.card1]}
            onSwipedRight={() => {
              console.log(meme._id)
-             if (this.state.order == 'random') {
+             // if (this.state.order == 'random') {
                this.checkCountMemes(meme, index)
-           }
+           // }
              vote('upvote', meme, this.props.userSub)
 
            }
          }
            onSwipedLeft={() => {
              console.log(meme._id)
-             if (this.state.order == 'random') {
+             // if (this.state.order == 'random') {
                this.checkCountMemes(meme, index)
-           }
+           // }
 
              vote('downvote', meme, this.props.userSub)
            }}
