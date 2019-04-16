@@ -105,8 +105,6 @@ class Uploaded extends Component {
           isListEnd: false
         })
       }
-
-
     }
 
   deleteMeme = (meme) => {
@@ -142,7 +140,6 @@ class Uploaded extends Component {
     } else {
       return null;
     }
-
   }
 
   // next: add code for rendering the component

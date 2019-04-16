@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
-  View } from 'react-native';
+  View,
+  ActivityIndicator } from 'react-native';
 
 import Auth0 from "react-native-auth0";
 import Config from "react-native-config";
@@ -19,32 +20,14 @@ import {connect} from 'react-redux';
 
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
-// var userSub;
 
-// const auth0 = new Auth0({
-//   domain: Config.AUTH0_DOMAIN,
-//   clientId: Config.AUTH0_CLIENT_ID
-// })
-
-// SInfo.getItem('accessToken', {}).then(accessToken => {
-// if (accessToken) {
-//   auth0.auth
-//     .userInfo({token: accessToken})
-//     .then(data => {
-//       userSub = data.sub
-//     })
-//     .catch(err => {
-//       console.log('error is here?')
-//       console.log(err)
-//       })
-//     } else {
-//       console.log('user not log in')
-//     }
-//   })
-
- class SavedMemes extends Component {
+class SavedMemes extends Component {
   state = {
-    savedMemes: []
+    savedMemes: [],
+    loading: false,
+    isListEnd: false,
+    fetching_from_server: false,
+    count: 0
   }
 
   renderItem = ({item}) => (
@@ -76,6 +59,51 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
     })
   }
 
+
+  fetchMoreSaved = () => {
+    this.setState({
+      count: this.state.count + 10
+    })
+    const {savedMemes} = this.state;
+    if (!this.state.fetching_from_server && !this.state.isListEnd) {
+
+        if (savedMemes.length % 10 === 0 && savedMemes.length !== 0) {
+          this.setState({fetching_from_server: true}, () => {
+          console.log('should be here')
+          fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes?next=' + this.state.count, {
+            method: 'GET',
+            headers: new Headers({
+              'Content-Type': 'application/json',
+              'authorization': this.props.userSub,
+            }),
+            cache: 'default'
+          })
+          .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+          .then(response => {
+            if (!response || response.status !== 200){
+              throw new Error(response.json.message)
+            }
+            console.log('and the response')
+            console.log(response)
+            response.json.map((meme) => {
+              this.setState( {
+                savedMemes: [...this.state.savedMemes, meme],
+                fetching_from_server: false,
+              })
+            }
+          )
+          })
+        })
+
+        }
+    } else {
+      this.setState({
+        fetching_from_server: true,
+        isListEnd: false
+      })
+    }
+  }
+
   deleteSavedMeme = (meme) => {
     fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes/' + meme.memeId, {
       method: 'DELETE',
@@ -103,6 +131,14 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
   openDrawer = () => {
     this.props.navigation.toggleDrawer();
   }
+
+  renderFooter = () => {
+    if (this.state.fetching_from_server === true) {
+      return <ActivityIndicator color="#9FA8DA" style={{margin: 100}} size="large" />
+    } else {
+      return null;
+    }
+  }
   render() {
     const {savedMemes} = this.state;
     return (
@@ -114,8 +150,10 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
           renderItem = {this.renderItem}
           keyExtractor = {meme => meme.memeId}
           showsVerticalScrollIndicator={false}
-          // onEndReached={this.fetchSavedMemes}
-          // onEndReachedThreshold={0}
+          onEndReachedThreshold={0.5}
+          onEndReached={this.fetchMoreSaved}
+          ListFooterComponent={this.renderFooter}
+          initialNumToRender={10}
         />
       </View>
     );

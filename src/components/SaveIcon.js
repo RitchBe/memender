@@ -52,7 +52,8 @@ export default class SaveIcon extends Component {
         body: JSON.stringify({
           userSub: this.props.userSub,
           memeId: meme._id,
-          url: meme.url
+          url: meme.url,
+          date: new Date(meme.date)
         })
       })
       .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
