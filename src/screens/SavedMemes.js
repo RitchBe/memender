@@ -35,93 +35,105 @@ class SavedMemes extends Component {
   )
 
   fetchSavedMemes = () => {
-    fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes', {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'authorization': this.props.userSub,
-      }),
-      cache: 'default'
-    })
-    .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
-    .then(response => {
-      if (!response || response.status !== 200) {
-        throw new Error(response.json.message)
-      }
-      console.log('get saved meme');
-      console.log(response)
-      response.json.map((meme) => (
-        this.setState({
-          savedMemes: [...this.state.savedMemes, meme],
+    SInfo.getItem('accessToken' ,{}).then(accessToken => {
+      if (accessToken) {
+        fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes', {
+          method: 'GET',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            'authorization': accessToken,
+          }),
+          cache: 'default'
         })
-
-      ))
+        .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+        .then(response => {
+          if (!response || response.status !== 200) {
+            throw new Error(response.json.message)
+          }
+          console.log('get saved meme');
+          console.log(response)
+          response.json.map((meme) => (
+            this.setState({
+              savedMemes: [...this.state.savedMemes, meme],
+            })
+          ))
+        })
+      }
     })
   }
 
 
   fetchMoreSaved = () => {
-    this.setState({
-      count: this.state.count + 10
-    })
-    const {savedMemes} = this.state;
-    if (!this.state.fetching_from_server && !this.state.isListEnd) {
-
-        if (savedMemes.length % 10 === 0 && savedMemes.length !== 0) {
-          this.setState({fetching_from_server: true}, () => {
-          console.log('should be here')
-          fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes?next=' + this.state.count, {
-            method: 'GET',
-            headers: new Headers({
-              'Content-Type': 'application/json',
-              'authorization': this.props.userSub,
-            }),
-            cache: 'default'
-          })
-          .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
-          .then(response => {
-            if (!response || response.status !== 200){
-              throw new Error(response.json.message)
-            }
-            console.log('and the response')
-            console.log(response)
-            response.json.map((meme) => {
-              this.setState( {
-                savedMemes: [...this.state.savedMemes, meme],
-                fetching_from_server: false,
-              })
-            }
-          )
-          })
+    SInfo.getItem('accessToken' ,{}).then(accessToken => {
+      if (accessToken) {
+        this.setState({
+          count: this.state.count + 10
         })
+        const {savedMemes} = this.state;
+        if (!this.state.fetching_from_server && !this.state.isListEnd) {
 
+            if (savedMemes.length % 10 === 0 && savedMemes.length !== 0) {
+              this.setState({fetching_from_server: true}, () => {
+              console.log('should be here')
+              fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes?next=' + this.state.count, {
+                method: 'GET',
+                headers: new Headers({
+                  'Content-Type': 'application/json',
+                  'authorization': accessToken,
+                }),
+                cache: 'default'
+              })
+              .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+              .then(response => {
+                if (!response || response.status !== 200){
+                  throw new Error(response.json.message)
+                }
+                console.log('and the response')
+                console.log(response)
+                response.json.map((meme) => {
+                  this.setState( {
+                    savedMemes: [...this.state.savedMemes, meme],
+                    fetching_from_server: false,
+                  })
+                }
+              )
+              })
+            })
+
+            }
+        } else {
+          this.setState({
+            fetching_from_server: true,
+            isListEnd: false
+          })
         }
-    } else {
-      this.setState({
-        fetching_from_server: true,
-        isListEnd: false
-      })
-    }
+      }
+    });
   }
 
   deleteSavedMeme = (meme) => {
-    fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes/' + meme.memeId, {
-      method: 'DELETE',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'authorization': this.props.userSub,
-      }),
-      cache: 'default'
-    })
-    .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
-    .then(response => {
-      if (!response || response.status !== 200) {
-        throw new Error(response.json.message)
+    SInfo.getItem('accessToken' ,{}).then(accessToken => {
+      if (accessToken) {
+        fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes/' + meme.memeId, {
+          method: 'DELETE',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            'authorization': this.props.userSub,
+          }),
+          cache: 'default'
+        })
+        .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+        .then(response => {
+          if (!response || response.status !== 200) {
+            throw new Error(response.json.message)
+          }
+          this.setState({
+            savedMemes: this.state.savedMemes.filter(x => x.memeId !== meme.memeId)
+          })
+        })
       }
-      this.setState({
-        savedMemes: this.state.savedMemes.filter(x => x.memeId !== meme.memeId)
-      })
-    })
+    });
+
   }
 
   componentDidMount() {
@@ -201,6 +213,7 @@ const styles = StyleSheet.create({
   icon: {
     padding: 15,
     fontSize: 17,
+
   },
   header:{
     height: 50,

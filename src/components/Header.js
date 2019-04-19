@@ -22,10 +22,6 @@ class Header extends Component {
     modalOpen: false
   }
 
-
-
-
-
 showModal = () => {
   this.setState({
     modalOpen: !this.state.modalOpen

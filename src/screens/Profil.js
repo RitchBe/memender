@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, Icon } from 'react-native';
+import { Text, View, Image, Icon, StyleSheet } from 'react-native';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import UploadedScreen from './Uploaded';
 import SavedMemeScreen from './SavedMemes';
@@ -14,21 +14,23 @@ const TabNavigator = createBottomTabNavigator(
       tabBarLabel: "Uploaded",
       tabBarIcon: ({focused, tintColor}) => (
         focused ?
-         <Image style={{height: 30, width: 30, marginTop: 5}} source={require('../assets/box.png')}/>
+        <Text style={[styles.label, styles.labelFocused]}>Uploaded</Text>
          :
-        <Image style={{height: 30, width: 30, marginTop: 5}} source={require('../assets/box-gray.png')}/>
+        <Text style={[styles.label, styles.labelNotFocused]}>Uploaded</Text>
+
       ),
     }
   },
   Saved: {
     screen: SavedMemeScreen,
     navigationOptions: {
-      tabBarLabel: "Saved",
+      tabBarLabel: "Gallery",
       tabBarIcon: ({focused, tintColor}) => (
         focused ?
-        <Image style={{height: 30, width: 30, marginTop: 5}} source={require('../assets/safebox.png')}/>
+        <Text style={[styles.label, styles.labelNotFocused]}>Gallery</Text>
         :
-        <Image style={{height: 30, width: 30, marginTop: 5}} source={require('../assets/safebox-gray.png')}/>
+        <Text style={[styles.label, styles.labelNotFocused]}>Gallery</Text>
+
       )
     }
   },
@@ -37,6 +39,7 @@ const TabNavigator = createBottomTabNavigator(
     activeTintColor: 'white',
     inactiveTintColor: '#9fa8da',
     activeBackgroundColor: '#9fa8da',
+    showLabel: false,
     style: {
       height: 55,
     },
@@ -48,5 +51,16 @@ const TabNavigator = createBottomTabNavigator(
   }
 }
 );
-
+const styles = StyleSheet.create({
+  label: {
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  labelFocused: {
+    color: 'white'
+  },
+  labelNotFocused: {
+    color: '#9fa8da'
+  }
+})
 export default createAppContainer(TabNavigator);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Octicons';
+import SInfo from "react-native-sensitive-info";
 import RNFetchBlob from 'react-native-fetch-blob';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
@@ -42,26 +43,30 @@ export default class SaveIcon extends Component {
       }
 
       //save in savedMemes Array
-      fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes', {
-        method: 'POST',
-        headers: new Headers({
-          'Content-Type': "application/json",
-          'authorization': this.props.userSub,
-        }),
-        cache: 'default',
-        body: JSON.stringify({
-          userSub: this.props.userSub,
-          memeId: meme._id,
-          url: meme.url,
-          date: new Date(meme.date)
-        })
-      })
-      .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
-      .then(response => {
-        if (!response || response.status !== 200) {
-          throw new Error(response.json.message)
+      SInfo.getItem('accessToken' ,{}).then(accessToken => {
+        if (accessToken) {
+          fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes', {
+            method: 'POST',
+            headers: new Headers({
+              'Content-Type': "application/json",
+              'authorization': accessToken,
+            }),
+            cache: 'default',
+            body: JSON.stringify({
+              userSub: this.props.userSub,
+              memeId: meme._id,
+              url: meme.url,
+              date: new Date(meme.date)
+            })
+          })
+          .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+          .then(response => {
+            if (!response || response.status !== 200) {
+              throw new Error(response.json.message)
+            }
+          })
         }
-      })
+      });
     }
 
   render() {

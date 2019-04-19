@@ -9,18 +9,19 @@ import Config from "react-native-config";
 import CardStack, {Card} from 'react-native-card-stack-swiper';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import * as cloudinary from 'cloudinary-core';
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import RNFetchBlob from 'react-native-fetch-blob';
 import { v4 as uuid } from "uuid";
 import PinchZoomView from 'react-native-pinch-zoom-view';
 import Icon from 'react-native-vector-icons/Octicons';
 import {connect} from 'react-redux';
-
 import { NavigationActions, StackActions } from "react-navigation";
-
 import RNRestart from "react-native-restart";
 
 
+import { NativeAdsManager} from 'react-native-fbads';
+import AdComponent from '../components/AdComponent';
 
 import {vote} from '../utils/utils'
 import {checkUser} from '../utils/utils'
@@ -31,7 +32,7 @@ import SaveIcon from '../components/SaveIcon'
 
 
 const memeKeyExtractor= meme => meme.memeId
-
+const adsManager = new NativeAdsManager('432030290881411_432032567547850', 10)
 
 class Home extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -44,7 +45,8 @@ class Home extends Component {
     memesTest: [],
     order: 'random',
     countBest: 1,
-    count: 0
+    count: 0,
+    countAds: 0
   }
 
   handleShare = currentMemes => {
@@ -62,37 +64,59 @@ class Home extends Component {
         path: 'images',
       },
     };
-    ImagePicker.showImagePicker(options, (response) => {
-        console.log(response.uri)
-        if (response.didCancel) {
-          console.log('user cancelled');
-        }
-        else if (response.error) {
-          console.log('image picker error:', response.error);
-        }
-        else if (response.customButton) {
-          console.log('User tapped custom button', response.customButton);
-        }
-        else {
-          let source = {uri: response.uri};
-          this.setState({
-            uploadingImg: true,
-          });
-          uploadFile(response)
-            .then(response => response.json())
-            .then(result => {
-              console.log('i an rte result');
-              console.log(result);
-              this.onMemeCreation(result)
-              this.setState({
-                uploadingImg: false
-              });
-            })
-        }
+    // ImagePicker.showImagePicker(options, (response) => {
+    //     console.log(response.uri)
+    //     if (response.didCancel) {
+    //       console.log('user cancelled');
+    //     }
+    //     else if (response.error) {
+    //       console.log('image picker error:', response.error);
+    //     }
+    //     else if (response.customButton) {
+    //       console.log('User tapped custom button', response.customButton);
+    //     }
+    //     else {
+    //       let source = {uri: response.uri};
+    //       this.setState({
+    //         uploadingImg: true,
+    //       });
+    //       uploadFile(response)
+    //         .then(response => response.json())
+    //         .then(result => {
+    //           console.log('i an rte result');
+    //           console.log(result);
+    //           this.onMemeCreation(result)
+    //           this.setState({
+    //             uploadingImg: false
+    //           });
+    //         })
+    //     }
+    //   });
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true
+    }).then(image => {
+      let source = {uri: image.path};
+      this.setState({
+        uploadingImg: true,
       });
+      uploadFile(image)
+      .then(image => image.json())
+      .then(result => {
+        console.log('result:')
+        console.log(result)
+        this.onMemeCreation(result);
+        this.setState({
+          uploadingImg: false
+        })
+      })
+    })
   }
 
   onMemeCreation = result => {
+    console.log('i am the url')
+    console.log(result)
     SInfo.getItem('accessToken', {}).then(accessToken => {
       if (accessToken) {
         auth0.auth
@@ -102,7 +126,7 @@ class Home extends Component {
               method: 'POST',
               headers: new Headers({
                 'Content-Type': 'application/json',
-                'authorization': data.sub,
+                'authorization': accessToken,
               }),
               cache: 'default',
               body: JSON.stringify({
@@ -123,29 +147,34 @@ class Home extends Component {
   }
 
  fetchMemes = () => {
-   console.log(' i am the sub from reducer');
-   console.log(this.props.userSub)
-    fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub, {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'authorization': this.props.userSub,
-      }),
-      cache: 'default'
-    })
-    .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
-    .then(response => {
-      if (!response || response.status !== 200){
-        throw new Error(response.json.message)
-      }
-      console.log('i am reponsee')
-      console.log(response)
-       response.json.map((meme) => (
-        this.setState({
-          memesTest: [...this.state.memesTest, meme],
+   SInfo.getItem('accessToken' ,{}).then(accessToken => {
+     if (accessToken) {
+       console.log(' i am the sub from reducer');
+       console.log(this.props.userSub)
+        fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub, {
+          method: 'GET',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            'authorization': accessToken,
+          }),
+          cache: 'default'
         })
-      ))
-    })
+        .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+        .then(response => {
+          if (!response || response.status !== 200){
+            throw new Error(response.json.message)
+          }
+          console.log('i am reponsee')
+          console.log(response)
+           response.json.map((meme) => (
+            this.setState({
+              memesTest: [...this.state.memesTest, meme],
+            })
+          ))
+        })
+     }
+   })
+
   }
 
   checkCountMemes = (meme, index) => {
@@ -178,29 +207,35 @@ class Home extends Component {
   }
 
   getSortedMeme = (order) => {
-    fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub + '/' + order + '?next=' + this.state.countBest, {
-      method: 'GET',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'authorization': this.props.userSub,
-      }),
-      cache: 'default'
-    })
-    .then(r => r.json().then(json => ({pk: r.ok, status: r.status, json: json})))
-    .then(response => {
-      if (!response || response.status !== 200) {
-        throw Error(response.json.message)
-      }
-      console.log(response)
-      response.json.map((meme) => (
-        this.setState({
-          memesTest: [...this.state.memesTest, meme]
+    SInfo.getItem('accessToken' ,{}).then(accessToken => {
+      if (accessToken) {
+        fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub + '/' + order + '?next=' + this.state.countBest, {
+          method: 'GET',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            'authorization': accessToken,
+          }),
+          cache: 'default'
         })
-      ))
+        .then(r => r.json().then(json => ({pk: r.ok, status: r.status, json: json})))
+        .then(response => {
+          if (!response || response.status !== 200) {
+            throw Error(response.json.message)
+          }
+          console.log(response)
+          response.json.map((meme) => (
+            this.setState({
+              memesTest: [...this.state.memesTest, meme]
+            })
+          ))
+        })
+      }
     })
+
   }
 
   sortMemes = (order) => {
+    console.log(order)
     if (order === "random") {
       this.setState({order: 'random'})
       this.setState({memesTest: []})
@@ -233,6 +268,20 @@ class Home extends Component {
     }
   }
 
+  checkForAds = () => {
+    const {countAds} = this.state
+    this.setState({countAds: countAds + 1})
+    if (countAds % 4 === 0 && countAds > 0) {
+      const ad = {
+        id: uuid(),
+        name: 'ads'
+      }
+      this.setState({
+        memesTest: [...this.state.memesTest, ad]
+      })
+    }
+  }
+
 
 
 openDrawer = () => {
@@ -262,66 +311,73 @@ openDrawer = () => {
 
           }}
           >
-      {this.state.memesTest.map(
-       (meme, index) => (
 
-         <Card
-           key={meme._id}
-           style={[styles.card, styles.card1]}
-           onSwipedRight={() => {
-             console.log(meme._id)
-             // if (this.state.order == 'random') {
-               this.checkCountMemes(meme, index)
-           // }
-             vote('upvote', meme, this.props.userSub)
+            {this.state.memesTest.map(
+              (meme, index) => (
+              // meme.name ? (
+              //       <Card
+              //        key={meme.id}
+              //        style={[styles.card, styles.card1]}
+              //        >
+              //        <View>
+              //           <AdComponent adsManager={adsManager} />
+              //        </View>
+              //      </Card>
+              //      ) : (
+                     <Card
+                       key={meme._id}
+                       style={[styles.card, styles.card1]}
+                       onSwipedRight={() => {
+                         // This will be for the ads when deploy
+                         // this.checkForAds()
+                         this.checkCountMemes(meme, index)
+                         vote('upvote', meme, this.props.userSub)
 
-           }
-         }
-           onSwipedLeft={() => {
-             console.log(meme._id)
-             // if (this.state.order == 'random') {
-               this.checkCountMemes(meme, index)
-           // }
+                       }
+                     }
+                       onSwipedLeft={() => {
+                         // This will be for the ads when deploy
+                         // this.checkForAds()
+                         this.checkCountMemes(meme, index)
+                         vote('downvote', meme, this.props.userSub)
+                       }}
+                       >
+                        <View style={styles.saveWrapper} >
+                          <SaveIcon userSub={this.props.userSub} meme={meme}/>
+                        </View>
+                     <View style={{flex: 1}}>
+                       <Image style={styles.images} source={{uri: meme.url}}/>
+                     </View>
 
-             vote('downvote', meme, this.props.userSub)
-           }}
-           >
-            <View style={styles.saveWrapper} >
-              <SaveIcon userSub={this.props.userSub} meme={meme}/>
-            </View>
-         <View style={{flex: 1}}>
-           <Image style={styles.images} source={{uri: meme.url}}/>
-         </View>
+                      <View style={styles.votesContainer}>
+                     <View style={styles.votes}>
+                       <TouchableOpacity style={styles.iconButton}>
+                         <Text style={[styles.textVotes, styles.upvote, styles.icon]} onPress={() => {
+                           this.swiper.swipeRight();
 
-          <View style={styles.votesContainer}>
-         <View style={styles.votes}>
-           <TouchableOpacity style={styles.iconButton}>
-             <Text style={[styles.textVotes, styles.upvote, styles.icon]} onPress={() => {
-               this.swiper.swipeRight();
+                         }}>{meme.upvote} ❤️</Text>
+                       </TouchableOpacity>
 
-             }}>{meme.upvote} ❤️</Text>
-           </TouchableOpacity>
+                       <TouchableOpacity onPress={() => {
+                         this.handleShare(meme)
+                       }}>
+                         <Text style={[styles.textVotes, styles.upvote, styles.icon]}>🎁</Text>
+                     </TouchableOpacity>
+                       <TouchableOpacity>
+                         <Text style={[styles.textVotes, styles.downvote, styles.icon]} onPress={() => {
+                           // this.handleDownvote(meme)
+                           this.swiper.swipeLeft();
+                           }}>
+                             {meme.downvote} 👎</Text>
+                       </TouchableOpacity>
+                     </View>
+                   </View>
+                     </Card>
+                   )
+                )
+               // )
+             }
 
-           <TouchableOpacity onPress={() => {
-             this.handleShare(meme)
-           }}>
-             <Text style={[styles.textVotes, styles.upvote, styles.icon]}>🎁</Text>
-         </TouchableOpacity>
-
-           <TouchableOpacity>
-
-             <Text style={[styles.textVotes, styles.downvote, styles.icon]} onPress={() => {
-               // this.handleDownvote(meme)
-               this.swiper.swipeLeft();
-               }}>
-                 {meme.downvote} 👎</Text>
-           </TouchableOpacity>
-         </View>
-       </View>
-
-         </Card>
-       )
-      )}
       </CardStack>
 
 
@@ -336,12 +392,16 @@ openDrawer = () => {
 }
 
 function uploadFile(file) {
+  console.log(file)
+  console.log(file.path)
+  console.log(file.modificationDate)
+
     const YOUR_CLOUDINARY_NAME = "db7eqzno0";
     const YOUR_CLOUDINARY_PRESET = "dssyruybqw";
     return RNFetchBlob.fetch('POST', 'httpss://api.cloudinary.com/v1_1/' + YOUR_CLOUDINARY_NAME + '/image/upload?upload_preset=' + YOUR_CLOUDINARY_PRESET, {
         'Content-Type': 'multipart/form-data',
     }, [
-            { name: 'file', filename: file.fileName, data: RNFetchBlob.wrap(file.uri) }
+            { name: 'file', filename: file.modificationDate, data: RNFetchBlob.wrap(file.path) }
         ])
 }
 

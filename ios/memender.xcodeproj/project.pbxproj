@@ -67,6 +67,9 @@
 		085B619F5F3544C9BADB9BDB /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D830FE1D8029427CA3D686D3 /* Zocial.ttf */; };
 		060F2C0AF367450E964CD603 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ECC8250B2134DD9B63B543C /* libRNVectorIcons.a */; };
 		0DE4A80D5B194ACEAA9F946D /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F69093BEFEF744FEA3375EAC /* libRNVectorIcons-tvOS.a */; };
+		9249D55BCA05489BB12AEEE1 /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EAD2F7708353495B815A15D6 /* libRCTFBSDK.a */; };
+		9897E7BC346B474488203D14 /* libReactNativeAdsFacebook.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13F681AE6F3B48EF8074624B /* libReactNativeAdsFacebook.a */; };
+		4C275F9926884AF5AE4A2AF7 /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BA93787854749ACABD74B6A /* libimageCropPicker.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -411,6 +414,12 @@
 		3563B23F7DE148EE8C2E19EA /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; name = "RNVectorIcons.xcodeproj"; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		6ECC8250B2134DD9B63B543C /* libRNVectorIcons.a */ = {isa = PBXFileReference; name = "libRNVectorIcons.a"; path = "libRNVectorIcons.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		F69093BEFEF744FEA3375EAC /* libRNVectorIcons-tvOS.a */ = {isa = PBXFileReference; name = "libRNVectorIcons-tvOS.a"; path = "libRNVectorIcons-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		D5619FE360C048738DE6E1F2 /* RCTFBSDK.xcodeproj */ = {isa = PBXFileReference; name = "RCTFBSDK.xcodeproj"; path = "../node_modules/react-native-fbsdk/ios/RCTFBSDK.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		EAD2F7708353495B815A15D6 /* libRCTFBSDK.a */ = {isa = PBXFileReference; name = "libRCTFBSDK.a"; path = "libRCTFBSDK.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		4F593437CCFF449FAD444586 /* ReactNativeAdsFacebook.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativeAdsFacebook.xcodeproj"; path = "../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		13F681AE6F3B48EF8074624B /* libReactNativeAdsFacebook.a */ = {isa = PBXFileReference; name = "libReactNativeAdsFacebook.a"; path = "libReactNativeAdsFacebook.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		62C87F4F88AB41F2AABB6900 /* imageCropPicker.xcodeproj */ = {isa = PBXFileReference; name = "imageCropPicker.xcodeproj"; path = "../node_modules/react-native-image-crop-picker/ios/imageCropPicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		6BA93787854749ACABD74B6A /* libimageCropPicker.a */ = {isa = PBXFileReference; name = "libimageCropPicker.a"; path = "libimageCropPicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -448,6 +457,9 @@
 				994AD1F7B558462B8D2F5AC2 /* libRNFetchBlob.a in Frameworks */,
 				F1E5805959FD4F76B7934DD2 /* libRNImagePicker.a in Frameworks */,
 				060F2C0AF367450E964CD603 /* libRNVectorIcons.a in Frameworks */,
+				9249D55BCA05489BB12AEEE1 /* libRCTFBSDK.a in Frameworks */,
+				9897E7BC346B474488203D14 /* libReactNativeAdsFacebook.a in Frameworks */,
+				4C275F9926884AF5AE4A2AF7 /* libimageCropPicker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -650,6 +662,9 @@
 				C6C6A45C5C5C423A86209B98 /* RNFetchBlob.xcodeproj */,
 				E22477F723D4402BBBE8BC30 /* RNImagePicker.xcodeproj */,
 				3563B23F7DE148EE8C2E19EA /* RNVectorIcons.xcodeproj */,
+				D5619FE360C048738DE6E1F2 /* RCTFBSDK.xcodeproj */,
+				4F593437CCFF449FAD444586 /* ReactNativeAdsFacebook.xcodeproj */,
+				62C87F4F88AB41F2AABB6900 /* imageCropPicker.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1329,6 +1344,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1341,6 +1359,9 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
+					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 				);
 			};
 			name = Debug;
@@ -1375,6 +1396,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1387,6 +1411,9 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
+					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 				);
 			};
 			name = Release;
@@ -1418,6 +1445,9 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
+					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 				);
 			};
 			name = Debug;
@@ -1448,6 +1478,9 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
+					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 				);
 			};
 			name = Release;
@@ -1490,6 +1523,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1502,6 +1538,9 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
+					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 				);
 			};
 			name = Debug;
@@ -1544,6 +1583,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1556,6 +1598,9 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
+					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 				);
 			};
 			name = Release;
@@ -1597,6 +1642,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1609,6 +1657,9 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
+					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 				);
 			};
 			name = Debug;
@@ -1650,6 +1701,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1662,6 +1716,9 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
+					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 				);
 			};
 			name = Release;

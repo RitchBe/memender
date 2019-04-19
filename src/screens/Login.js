@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-import { View, Text, Button, ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Button, ActivityIndicator, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
 import { NavigationActions, StackActions } from "react-navigation";
 import Auth0 from "react-native-auth0";
 import Config from "react-native-config";
 import DeviceInfo from "react-native-device-info";
 import SInfo from "react-native-sensitive-info";
 import RNRestart from "react-native-restart";
+import CheckBox from 'react-native-checkbox';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {connect} from 'react-redux';
 
 
@@ -20,7 +22,9 @@ class Login extends Component {
   // }
 
   state = {
-    hasInitialized: false
+    hasInitialized: false,
+    termAccept: false,
+
   };
 
   componentDidMount() {
@@ -58,56 +62,100 @@ class Login extends Component {
   }
 
   render() {
+    const {termAccept, hasInitialized} = this.state
+    if (termAccept) {
+      btns = <View style={{flexDirection: 'row'}}>
+                  <TouchableOpacity style={styles.btnContainer, {marginRight: 5}} onPress={this.login}>
+                    <Text style={styles.btnText}>Login</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.btnContainer, {marginLeft: 5}} onPress={this.login}>
+                    <Text style={styles.btnText}>Signup</Text>
+                  </TouchableOpacity>
+                </View>
+    } else {
+      btns = <View style={{flexDirection: 'row'}}>
+                  <TouchableOpacity style={styles.btnContainer, {marginRight: 5}}>
+                    <Text style={[styles.btnText, styles.btnTextNotAccepted]}>Login</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.btnContainer, {marginLeft: 5}}>
+                    <Text style={[styles.btnText, styles.btnTextNotAccepted]}>Signup</Text>
+                  </TouchableOpacity>
+                </View>
+    }
+
     return (
       <View style={styles.container}>
-        {/* <ActivityIndicator
-          size="large"
-          color="#05a5d1"
-          animation={!this.state.hasInitialized}
-        /> */}
-        {this.state.hasInitialized && (
+        {hasInitialized && (
+          <View style={styles.container}>
+        <View style={styles.card}>
+          <View style={styles.cardContent}>
+            <Image source={require('../assets/logo.png')} style={styles.logo}/>
+            <Text style={styles.textCard}>Find the best memes, funny picture around. Swipe for the one you liked
+            </Text>
+            <View style={styles.votesContainer}>
+              <View style={styles.votes}>
+                <Text style={[styles.textVotes, styles.upvote, styles.icon]}>❤️</Text>
+                <Text style={[styles.textVotes, styles.upvote, styles.icon]}>🎁</Text>
+                <Text style={[styles.textVotes, styles.downvote, styles.icon]}>👎</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View style={styles.terms}>
+          <CheckBox
+            checked={termAccept}
+            labelStyle={{width: 0}}
+            checkedImage={require('../assets/checked.png')}
+            uncheckedImage={require('../assets/unchecked.png')}
+            onChange={(checked) =>this.setState({termAccept: !termAccept})}
+          />
+          <Text style={{color: 'darkgray'}}>I have read and accepted the <Text style={{color:'#9FA8DA', textDecorationLine: 'underline'}}>Privacy Policy</Text> and the <Text style={{color:'#9FA8DA', textDecorationLine: 'underline'}}>Term and conditions</Text> of Memender</Text>
+        </View>
 
-          <TouchableOpacity style={styles.btnContainer} onPress={this.login}>
-            <Text style={styles.btnText}>Login</Text>
-          </TouchableOpacity>
+          {btns}
 
+        </View>
         )}
       </View>
     )
   }
 
   login = () => {
-    auth0.webAuth
-      .authorize({
-        scope: Config.AUTHO_SCOPE,
-        audience: Config.AUTH0_AUDIENCE,
-        device: DeviceInfo.getUniqueID(),
-        prompt: "login"
-      })
-      .then(res => {
-        console.log(' i am tje res')
-        console.log(res)
-        auth0.auth
-          .userInfo({token: res.accessToken})
-          .then(data => {
-            this.createUser(data);
-            RNRestart.Restart()
-            this.props.userConnect(data.sub)
-          })
-          .catch(err => {
-            console.log("err: ");
-            console.log(JSON.stringify(err));
-            this.props.userNotConnected();
-          });
+    if (this.state.termAccept) {
+      auth0.webAuth
+        .authorize({
+          scope: Config.AUTHO_SCOPE,
+          audience: Config.AUTH0_AUDIENCE,
+          device: DeviceInfo.getUniqueID(),
+          prompt: "login"
+        })
+        .then(res => {
+          console.log(' i am tje res')
+          console.log(res)
+          auth0.auth
+            .userInfo({token: res.accessToken})
+            .then(data => {
+              this.createUser(data);
+              RNRestart.Restart()
+              this.props.userConnect(data.sub)
+            })
+            .catch(err => {
+              console.log("err: ");
+              console.log(JSON.stringify(err));
+              this.props.userNotConnected();
+            });
 
-        SInfo.setItem("accessToken", res.accessToken, {});
-        SInfo.setItem("refreshToken", res.refreshToken, {});
+          SInfo.setItem("accessToken", res.accessToken, {});
+          SInfo.setItem("refreshToken", res.refreshToken, {});
 
-      })
-      .catch(error => {
-        console.log("Error while trying to authenticate", error);
-        this.props.userNotConnected();
-      });
+        })
+        .catch(error => {
+          console.log("Error while trying to authenticate", error);
+          this.props.userNotConnected();
+        });
+    } else {
+      console.log('Accepet')
+    }
   };
 
   createUser = data => {
@@ -162,6 +210,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  terms: {
+    flexDirection: 'row',
+    width: wp('70%'),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 15
+  },
   btnContainer:{
     justifyContent: 'center',
     alignItems: 'center'
@@ -176,5 +231,48 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     borderRadius: 8,
     fontSize: 17,
+  },
+  btnTextNotAccepted: {
+    backgroundColor: 'rgba(220,220,220,0.4)',
+    color: 'white'
+  },
+  card: {
+    padding: 15,
+    width: wp('90%'),
+    height: hp('75%'),
+    backgroundColor: 'white',
+    borderRadius: 5,
+    zIndex: 0
+  },
+  logo: {
+    height: 50,
+    width: 210,
+    alignSelf: 'center',
+    justifyContent: 'center'
+  },
+  votesContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  votes: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: wp('70%')
+  },
+  icon: {
+    padding: 15,
+    fontSize: 17,
+  },
+  cardContent: {
+    justifyContent: 'space-between',
+    flex: 1,
+    alignItems: 'center'
+  },
+  textCard: {
+    fontSize: 18,
+    color: '#9FA8DA',
+    width: wp('75%')
   }
+
 })

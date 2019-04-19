@@ -22,6 +22,13 @@ import {connect} from 'react-redux';
 
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
+import { NativeAdsManager, AdSettings, BannerView} from 'react-native-fbads';
+import AdComponent from '../components/AdComponent';
+
+
+
+const adsManager = new NativeAdsManager('432030290881411_432032567547850', 10)
+
 
 class Uploaded extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -42,89 +49,103 @@ class Uploaded extends Component {
   )
 
   fetchUserMemes = () => {
-    const {userMemes} = this.state;
-      fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes', {
-              method: 'GET',
-              headers: new Headers({
-                'Content-Type': 'application/json',
-                'authorization': this.props.userSub,
-              }),
-              cache: 'default'
-            })
-            .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
-            .then(response => {
-              if (!response || response.status !== 200){
-                throw new Error(response.json.message)
-              }
-
-              response.json.map((meme) => (
-                this.setState({
-                  userMemes: [...this.state.userMemes, meme],
+    SInfo.getItem('accessToken' ,{}).then(accessToken => {
+      if (accessToken) {
+        const {userMemes} = this.state;
+          fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes', {
+                  method: 'GET',
+                  headers: new Headers({
+                    'Content-Type': 'application/json',
+                    'authorization':accessToken,
+                  }),
+                  cache: 'default'
                 })
-              ))
-            })
-          }
+                .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+                .then(response => {
+                  if (!response || response.status !== 200){
+                    throw new Error(response.json.message)
+                  }
+
+                  response.json.map((meme) => (
+                    this.setState({
+                      userMemes: [...this.state.userMemes, meme],
+                    })
+                  ))
+                })
+      }
+    });
+    }
 
     fetchMore = () => {
-      const {userMemes} = this.state;
-      console.log(userMemes.length)
-      if (!this.state.fetching_from_server && !this.state.isListEnd) {
+      SInfo.getItem('accessToken' ,{}).then(accessToken => {
+        if (accessToken) {
+          const {userMemes} = this.state;
+          console.log(userMemes.length)
+          if (!this.state.fetching_from_server && !this.state.isListEnd) {
 
-          if (userMemes.length % 10 === 0 && userMemes.length !== 0) {
-            this.setState({fetching_from_server: true}, () => {
-            console.log('should be here')
-            fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes?next=' + userMemes[userMemes.length -1].date, {
-              method: 'GET',
-              headers: new Headers({
-                'Content-Type': 'application/json',
-                'authorization': this.props.userSub,
-              }),
-              cache: 'default'
-            })
-            .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
-            .then(response => {
-              if (!response || response.status !== 200){
-                throw new Error(response.json.message)
-              }
-              console.log('and the response')
-              console.log(response)
-              response.json.map((meme) => {
-                this.setState( {
-                  userMemes: [...this.state.userMemes, meme],
-                  fetching_from_server: false,
+              if (userMemes.length % 10 === 0 && userMemes.length !== 0) {
+                this.setState({fetching_from_server: true}, () => {
+                console.log('should be here')
+                fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes?next=' + userMemes[userMemes.length -1].date, {
+                  method: 'GET',
+                  headers: new Headers({
+                    'Content-Type': 'application/json',
+                    'authorization': accessToken,
+                  }),
+                  cache: 'default'
                 })
-              }
-            )
-            })
-          })
+                .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+                .then(response => {
+                  if (!response || response.status !== 200){
+                    throw new Error(response.json.message)
+                  }
+                  console.log('and the response')
+                  console.log(response)
+                  response.json.map((meme) => {
+                    this.setState( {
+                      userMemes: [...this.state.userMemes, meme],
+                      fetching_from_server: false,
+                    })
+                  }
+                )
+                })
+              })
 
+              }
+          } else {
+            this.setState({
+              fetching_from_server: true,
+              isListEnd: false
+            })
           }
-      } else {
-        this.setState({
-          fetching_from_server: true,
-          isListEnd: false
-        })
-      }
+        }
+      });
+
     }
 
   deleteMeme = (meme) => {
-    fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes/' + meme._id, {
-      method: 'DELETE',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        'authorization': this.props.userSub,
-      }),
-      cache: 'default'
-    })
-    .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
-    .then(response => {
-      if (!response || response.status !== 200) {
-        throw new Error(response.json.message)
+    SInfo.getItem('accessToken' ,{}).then(accessToken => {
+      if (accessToken) {
+        fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes/' + meme._id, {
+          method: 'DELETE',
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            'authorization': this.props.userSub,
+          }),
+          cache: 'default'
+        })
+        .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+        .then(response => {
+          if (!response || response.status !== 200) {
+            throw new Error(response.json.message)
+          }
+          this.setState({
+            userMemes: this.state.userMemes.filter(x => x._id !== meme._id)
+          })
+        })
       }
-      this.setState({
-        userMemes: this.state.userMemes.filter(x => x._id !== meme._id)
-      })
-    })
+    });
+
   }
 
   componentDidMount() {
@@ -149,8 +170,7 @@ class Uploaded extends Component {
    return (
      <View style={styles.list}>
     <Header onOpenDrawer={this.openDrawer} upladed={true}/>
-
-      <FlatList
+    <FlatList
         style={{flex: 1}}
         data={this.state.userMemes}
         extraData={this.state}
