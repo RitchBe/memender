@@ -27,7 +27,7 @@ const TabNavigator = createBottomTabNavigator(
       tabBarLabel: "Gallery",
       tabBarIcon: ({focused, tintColor}) => (
         focused ?
-        <Text style={[styles.label, styles.labelNotFocused]}>Gallery</Text>
+        <Text style={[styles.label, styles.labelFocused]}>Gallery</Text>
         :
         <Text style={[styles.label, styles.labelNotFocused]}>Gallery</Text>
 

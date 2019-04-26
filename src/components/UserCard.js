@@ -21,8 +21,9 @@ export default class UserCard extends PureComponent {
 
   render() {
     const {item} = this.props
+    console.log(item)
     return (
-      <View  key={item.memeId} style={styles.memeContainer}>
+      <View  key={item._id} style={styles.memeContainer}>
         <Image style={styles.images} source={{uri: item.url}}/>
         <View style={styles.votes}>
           <Text style={[styles.textVotes, styles.upvote, styles.icon]}>{item.upvote} ❤️</Text>

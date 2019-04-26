@@ -39,17 +39,27 @@ class Login extends Component {
           })
           .catch(err => {
             SInfo.getItem("refreshToken", {}).then(refreshToken => {
-              auth0.auth
-                .refreshToken({refreshToken: refreshToken})
-                .then(newAccessToken => {
-                  SInfo.setItem('accessToken', newAccessToken.accessToken, {});
+              console.log(refreshToken)
+              if (refreshToken == null) {
+                this.setState({
+                  hasInitialized: true
+                })
+              } else {
+                auth0.auth
+                  .refreshToken({refreshToken: refreshToken})
+                  .then(newAccessToken => {
+                    console.log(newAccessToken)
+                    SInfo.setItem('accessToken', newAccessToken.accessToken, {});
+                  })
+                  .catch(accessTokenErr => {
+                    this.setState({
+                      hasInitialized: true
+                    });
+                    console.log("error getting new accessToken: ", accessTokenErr)
+                    this.props.userNotConnected();
+                  })
+              }
 
-                })
-                .catch(accessTokenErr => {
-                  this.login()
-                  console.log("error getting new accessToken: ", accessTokenErr)
-                  this.props.userNotConnected();
-                })
             })
           })
       } else {
@@ -111,9 +121,7 @@ class Login extends Component {
           />
           <Text style={{color: 'darkgray'}}>I have read and accepted the <Text style={{color:'#9FA8DA', textDecorationLine: 'underline'}}>Privacy Policy</Text> and the <Text style={{color:'#9FA8DA', textDecorationLine: 'underline'}}>Term and conditions</Text> of Memender</Text>
         </View>
-
           {btns}
-
         </View>
         )}
       </View>
@@ -136,7 +144,7 @@ class Login extends Component {
             .userInfo({token: res.accessToken})
             .then(data => {
               this.createUser(data);
-              RNRestart.Restart()
+              // RNRestart.Restart()
               this.props.userConnect(data.sub)
             })
             .catch(err => {
@@ -160,6 +168,7 @@ class Login extends Component {
 
   createUser = data => {
     console.log('hi from createuser')
+    console.log(data)
     fetch('http://192.168.0.19:3000/api/users', {
       method: 'POST',
       headers: new Headers({

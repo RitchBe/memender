@@ -10,6 +10,10 @@ import Auth0 from "react-native-auth0";
 import Config from "react-native-config";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Octicons';
+import LinearGradient from "react-native-linear-gradient";
+
+
+
 
 
 const auth0 = new Auth0({
@@ -19,6 +23,10 @@ const auth0 = new Auth0({
 
 class CustomDrawer extends Component {
 
+  componentDidMount() {
+    console.log('here')
+    console.log(this.props)
+  }
   logOut = () => {
     SInfo.deleteItem("accessToken", {});
     SInfo.deleteItem("refreshToken", {});
@@ -35,26 +43,55 @@ class CustomDrawer extends Component {
       RNRestart.Restart()
   };
   render() {
+
+
     return (
+
       <ScrollView>
+        <LinearGradient
+            colors={[
+              // #4e54c8
+              // "#9FA8DA",
+              // '#8f94fb',
+
+              // '#bc4e9c',
+              // '#f80759'
+
+              // '#7F00FF',
+              // '#E100FF'
+
+              '#F2994A',
+              '#F2C94C'
+
+              // '#FFAFBD',
+              // '#ffc3a0'
+
+            ]}
+            style={{flex: 1}}
+            >
         <View style={styles.drawerContainer}>
         <View style={styles.logOutContainer}>
+        <TouchableOpacity style={styles.infoBtn} onPress={() => this.props.navigation.navigate('Info')}>
+        <Icon name="info" size={20} color='#E8EAF6' />
+        </TouchableOpacity>
         <TouchableOpacity style={styles.logOutBtn} onPress={this.logOut}>
           <Icon name="sign-out" size={20} color='#E8EAF6' />
         </TouchableOpacity>
         </View>
         <DrawerItems
         inactiveTintColor='#E8EAF6'
-        activeTintColor='#9FA8DA'
+        activeTintColor='#F2C94C'
         labelStyle={{fontSize: 20}}
         activeBackgroundColor='#E8EAF6'
         itemsContainerStyle={{marginVertical: 60}}
         iconContainerStyle={{marginVertical: 60}}
-
-        {...this.props} />
-
+        {...this.props}
+         />
         </View>
+      </LinearGradient>
+
         </ScrollView>
+
     );
   }
 }
@@ -76,7 +113,7 @@ export default connect(mapStateToProps,mapDispatchToProps)(CustomDrawer)
 
 const styles = StyleSheet.create({
   drawerContainer: {
-    backgroundColor: '#9FA8DA',
+    // backgroundColor: '#9FA8DA',
     paddingVertical: 50,
     justifyContent: 'center',
     alignItems: 'stretch',
@@ -92,6 +129,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top:20,
     right: 0,
-    marginRight: 10
+    marginRight: 10,
+    flexDirection: 'row'
+  },
+  infoBtn: {
+    marginRight: 10,
+    padding: 5
+  },
+  logOutBtn: {
+    padding: 5
   }
 })

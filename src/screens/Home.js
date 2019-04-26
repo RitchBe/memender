@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, Platform, StyleSheet, TouchableOpacity, Image, FlatList, Share } from 'react-native';
+import { Text, View, Button, Platform, StyleSheet, TouchableOpacity, Image, FlatList, Share, ActivityIndicator } from 'react-native';
 import DeviceInfo from "react-native-device-info";
 import SInfo from "react-native-sensitive-info";
 import Auth0 from "react-native-auth0";
@@ -18,6 +18,9 @@ import Icon from 'react-native-vector-icons/Octicons';
 import {connect} from 'react-redux';
 import { NavigationActions, StackActions } from "react-navigation";
 import RNRestart from "react-native-restart";
+import DropdownAlert from 'react-native-dropdownalert';
+import LinearGradient from "react-native-linear-gradient";
+
 
 
 import { NativeAdsManager} from 'react-native-fbads';
@@ -31,7 +34,7 @@ import SaveIcon from '../components/SaveIcon'
 
 
 
-const memeKeyExtractor= meme => meme.memeId
+const memeKeyExtractor= meme => meme._id
 const adsManager = new NativeAdsManager('432030290881411_432032567547850', 10)
 
 class Home extends Component {
@@ -43,6 +46,7 @@ class Home extends Component {
 
   state= {
     memesTest: [],
+    seenMeme: [],
     order: 'random',
     countBest: 1,
     count: 0,
@@ -64,38 +68,13 @@ class Home extends Component {
         path: 'images',
       },
     };
-    // ImagePicker.showImagePicker(options, (response) => {
-    //     console.log(response.uri)
-    //     if (response.didCancel) {
-    //       console.log('user cancelled');
-    //     }
-    //     else if (response.error) {
-    //       console.log('image picker error:', response.error);
-    //     }
-    //     else if (response.customButton) {
-    //       console.log('User tapped custom button', response.customButton);
-    //     }
-    //     else {
-    //       let source = {uri: response.uri};
-    //       this.setState({
-    //         uploadingImg: true,
-    //       });
-    //       uploadFile(response)
-    //         .then(response => response.json())
-    //         .then(result => {
-    //           console.log('i an rte result');
-    //           console.log(result);
-    //           this.onMemeCreation(result)
-    //           this.setState({
-    //             uploadingImg: false
-    //           });
-    //         })
-    //     }
-    //   });
+
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true
+      width: 700,
+      height: 900,
+      avoidEmptySpaceAroundImage: false,
+      cropping: false,
+      includeBase64: true,
     }).then(image => {
       let source = {uri: image.path};
       this.setState({
@@ -119,9 +98,6 @@ class Home extends Component {
     console.log(result)
     SInfo.getItem('accessToken', {}).then(accessToken => {
       if (accessToken) {
-        auth0.auth
-          .userInfo({token: accessToken})
-          .then(data => {
             fetch('http://192.168.0.19:3000/api/memes/', {
               method: 'POST',
               headers: new Headers({
@@ -130,18 +106,20 @@ class Home extends Component {
               }),
               cache: 'default',
               body: JSON.stringify({
-                url: result.url,
-                userSub: data.sub
+                url: result.secure_url,
+                userSub: this.props.userSub
               })
             })
             .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
             .then(response => {
               if (!response || response.status !== 201) {
-                throw new Error(response,json.message)
-              }
+                this.dropdown.alertWithType('error', 'Error', 'Error while updating the meme.')
+                throw new Error(response.json.message)
+            }
+            this.dropdown.alertWithType('success', 'Success', 'Meme Updated')
 
-            })
-          })
+
+        })
       }
     })
   }
@@ -151,6 +129,7 @@ class Home extends Component {
      if (accessToken) {
        console.log(' i am the sub from reducer');
        console.log(this.props.userSub)
+       //http://192.168.0.19:3000
         fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub, {
           method: 'GET',
           headers: new Headers({
@@ -179,6 +158,10 @@ class Home extends Component {
 
   checkCountMemes = (meme, index) => {
     const {count, countBest} = this.state
+    this.setState({
+      seenMeme: [...this.state.seenMeme , meme]
+    });
+
     if (this.state.order === "random"){
       this.setState({
         count: count + 1,
@@ -291,17 +274,15 @@ openDrawer = () => {
 
   render() {
     var cl = new cloudinary.Cloudinary({cloud_name: "db7eqzno0", secure: true, context: true,image_metadata: "true"});
+    const {memesTest} = this.state;
 
     return (
       <View style={styles.container}>
       <Header onOpenDrawer={this.openDrawer} home={true} sortMemes={(order) => {this.sortMemes(order)}}/>
 
 
-        <CardStack style={styles.content} renderNoMoreCards={() => <Text style={{
-              fontWeight: '700',
-              fontSize: 18,
-              color: 'gray'
-            }}>Come back for more fdp :(</Text>} ref={swiper => {
+        <CardStack style={styles.content} renderNoMoreCards={() =>
+          <ActivityIndicator color="#9FA8DA" style={{margin: 100}} size="large" />} ref={swiper => {
             this.swiper = swiper
           }}
           onSwipedRight={() => {
@@ -324,68 +305,71 @@ openDrawer = () => {
               //        </View>
               //      </Card>
               //      ) : (
-                     <Card
-                       key={meme._id}
-                       style={[styles.card, styles.card1]}
-                       onSwipedRight={() => {
-                         // This will be for the ads when deploy
-                         // this.checkForAds()
-                         this.checkCountMemes(meme, index)
-                         vote('upvote', meme, this.props.userSub)
 
-                       }
-                     }
-                       onSwipedLeft={() => {
-                         // This will be for the ads when deploy
-                         // this.checkForAds()
-                         this.checkCountMemes(meme, index)
-                         vote('downvote', meme, this.props.userSub)
-                       }}
-                       >
-                        <View style={styles.saveWrapper} >
-                          <SaveIcon userSub={this.props.userSub} meme={meme}/>
-                        </View>
-                     <View style={{flex: 1}}>
-                       <Image style={styles.images} source={{uri: meme.url}}/>
-                     </View>
+              this.state.seenMeme.indexOf(meme) === -1 &&
+                <Card
+                  key={meme._id}
+                  style={[styles.card, styles.card1]}
+                  onSwipedRight={() => {
+                    // This will be for the ads when deploy
+                    // this.checkForAds()
+                    this.checkCountMemes(meme, index)
+                    vote('upvote', meme, this.props.userSub)
 
-                      <View style={styles.votesContainer}>
-                     <View style={styles.votes}>
-                       <TouchableOpacity style={styles.iconButton}>
-                         <Text style={[styles.textVotes, styles.upvote, styles.icon]} onPress={() => {
-                           this.swiper.swipeRight();
-
-                         }}>{meme.upvote} ❤️</Text>
-                       </TouchableOpacity>
-
-                       <TouchableOpacity onPress={() => {
-                         this.handleShare(meme)
-                       }}>
-                         <Text style={[styles.textVotes, styles.upvote, styles.icon]}>🎁</Text>
-                     </TouchableOpacity>
-                       <TouchableOpacity>
-                         <Text style={[styles.textVotes, styles.downvote, styles.icon]} onPress={() => {
-                           // this.handleDownvote(meme)
-                           this.swiper.swipeLeft();
-                           }}>
-                             {meme.downvote} 👎</Text>
-                       </TouchableOpacity>
-                     </View>
+                  }
+                }
+                  onSwipedLeft={() => {
+                    // This will be for the ads when deploy
+                    // this.checkForAds()
+                    this.checkCountMemes(meme, index)
+                    vote('downvote', meme, this.props.userSub)
+                  }}
+                  >
+                   <View style={styles.saveWrapper} >
+                     <SaveIcon userSub={this.props.userSub} meme={meme}/>
                    </View>
-                     </Card>
-                   )
+                <View style={{flex: 1}}>
+                  <Image style={styles.images} source={{uri: meme.url}}/>
+                </View>
+
+                 <View style={styles.votesContainer}>
+                <View style={styles.votes}>
+                  <TouchableOpacity style={styles.iconButton}>
+                    <Text style={[styles.textVotes, styles.upvote, styles.icon]} onPress={() => {
+                      this.swiper.swipeRight();
+
+                    }}>{meme.upvote} ❤️</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={() => {
+                    this.handleShare(meme)
+                  }}>
+                    <Text style={[styles.textVotes, styles.upvote, styles.icon]}>🎁</Text>
+                </TouchableOpacity>
+                  <TouchableOpacity>
+                    <Text style={[styles.textVotes, styles.downvote, styles.icon]} onPress={() => {
+                      // this.handleDownvote(meme)
+                      this.swiper.swipeLeft();
+                      }}>
+                        {meme.downvote} 👎</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+                </Card>
+                 )
                 )
                // )
              }
 
       </CardStack>
 
-
       <View style={styles.footerContainer}>
       <TouchableOpacity style={styles.footer} onPress={this.submit}>
        <Text style={styles.footerTitle}>Add yours</Text>
-      </TouchableOpacity>
+     </TouchableOpacity>
       </View>
+
+      <DropdownAlert ref={ref => this.dropdown = ref} />
       </View>
     );
   }
@@ -396,12 +380,12 @@ function uploadFile(file) {
   console.log(file.path)
   console.log(file.modificationDate)
 
-    const YOUR_CLOUDINARY_NAME = "db7eqzno0";
-    const YOUR_CLOUDINARY_PRESET = "dssyruybqw";
-    return RNFetchBlob.fetch('POST', 'httpss://api.cloudinary.com/v1_1/' + YOUR_CLOUDINARY_NAME + '/image/upload?upload_preset=' + YOUR_CLOUDINARY_PRESET, {
+    const YOUR_CLOUDINARY_NAME = Config.CLOUDINARY_NAME;
+    const YOUR_CLOUDINARY_PRESET = Config.CLOUDINARY_PRESET;
+    return RNFetchBlob.fetch('POST', 'https://api.cloudinary.com/v1_1/' + YOUR_CLOUDINARY_NAME + '/image/upload?upload_preset=' + YOUR_CLOUDINARY_PRESET, {
         'Content-Type': 'multipart/form-data',
     }, [
-            { name: 'file', filename: file.modificationDate, data: RNFetchBlob.wrap(file.path) }
+            { name: 'file', filename: file.modificationDate, data: file.data }
         ])
 }
 

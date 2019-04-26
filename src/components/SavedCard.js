@@ -28,7 +28,7 @@ export default class SavedCard extends Component {
   render() {
     const {item} = this.props
     return (
-      <View  key={item.memeId} style={styles.memeContainer}>
+      <View  key={item._id} style={styles.memeContainer}>
       <View style={styles.votes}>
         <TouchableOpacity onPress={this.handleDelete}>
           <Text style={styles.icon}>🗑️</Text>

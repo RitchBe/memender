@@ -5,6 +5,7 @@ import {StackNavigator, createStackNavigator, createAppContainer, createDrawerNa
 import LoginScreen from '../screens/Login';
 import ProfilScreen from '../screens/Profil';
 import HomeScreen from '../screens/Home';
+import Info from '../screens/Info';
 import CustomDrawer from '../components/CustomDrawer';
 
 
@@ -26,7 +27,12 @@ const Drawer = createDrawerNavigator(
     Profil: {
       screen: ProfilScreen
     },
-
+    Info: {
+      screen: Info,
+      navigationOptions: {
+        drawerLabel: () => null
+      }
+    },
   },
   {
     initialRouteName: "Home",

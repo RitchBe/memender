@@ -49,6 +49,9 @@ class Uploaded extends Component {
   )
 
   fetchUserMemes = () => {
+    this.setState({
+      userMemes: []
+    })
     SInfo.getItem('accessToken' ,{}).then(accessToken => {
       if (accessToken) {
         const {userMemes} = this.state;
@@ -149,8 +152,18 @@ class Uploaded extends Component {
   }
 
   componentDidMount() {
-    this.fetchUserMemes()
-}
+    const {navigation} = this.props;
+    this.willFocusListener = navigation.addListener(
+      'willFocus',
+      () => {
+        this.fetchUserMemes()
+      }
+    )
+  }
+
+  componentWillUnmount() {
+    this.willFocusListener.remove();
+  }
 
   openDrawer = () => {
     this.props.navigation.toggleDrawer();
@@ -166,23 +179,29 @@ class Uploaded extends Component {
   // next: add code for rendering the component
   render() {
    const { userMemes } = this.state;
+   if (userMemes.length > 0) {
+    content =  <FlatList
+            style={{flex: 1}}
+            data={this.state.userMemes}
+            extraData={this.state}
+            renderItem = {this.renderItem}
+            keyExtractor={meme => meme._id}
+            showsVerticalScrollIndicator={false}
+            onEndReachedThreshold={0.5}
+            onEndReached={this.fetchMore}
+            ListFooterComponent={this.renderFooter}
+            initialNumToRender={10}
+          />
+   } else {
+     content = <View style={styles.noSavedMeme}>
+                 <Text style={styles.placeholderText}>You didn't uploaded any images yet.</Text>
+               </View>
+   }
 
    return (
      <View style={styles.list}>
-    <Header onOpenDrawer={this.openDrawer} upladed={true}/>
-    <FlatList
-        style={{flex: 1}}
-        data={this.state.userMemes}
-        extraData={this.state}
-        renderItem = {this.renderItem}
-        keyExtractor={meme => meme._id}
-        showsVerticalScrollIndicator={false}
-        onEndReachedThreshold={0.5}
-        onEndReached={this.fetchMore}
-        ListFooterComponent={this.renderFooter}
-        initialNumToRender={10}
-      />
-
+    <Header onOpenDrawer={this.openDrawer} uploaded={true}/>
+      {content}
      </View>
    );
  }
@@ -250,6 +269,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     flex: 1
+  },
+  noSavedMeme: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  placeholderText: {
+    color: '#9FA8DA',
+    fontWeight: 'bold'
   }
 
 });

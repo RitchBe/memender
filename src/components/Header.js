@@ -34,10 +34,7 @@ sortOrder = (order) => {
 }
 
   render() {
-
-
     if (this.props.home == true) {
-
        rightBtn =
                <View style={{zIndex: 500000}}>
                <TouchableOpacity onPress={this.showModal}>
@@ -64,9 +61,7 @@ sortOrder = (order) => {
                 </Modal>
             </View>
     } else if (this.props.uploaded == true) {
-       rightBtn = <TouchableOpacity onPress={this.sortPlaceHolder}>
-                <Icon name="award" size={25} color="#9FA8DA" style={{marginRight: 15}}/>
-              </TouchableOpacity>
+        rightBtn = <View style={{width: 25, height: 25, marginRight: 15}}></View>
     } else if (this.props.saved == true) {
        rightBtn = <View style={{width: 25, height: 25, marginRight: 15}}></View>
     }
@@ -78,7 +73,7 @@ sortOrder = (order) => {
           <Image style={{width: 25, height: 25, marginLeft: 15, padding: 5}} source={require('../assets/menu2.png')}/>
         </TouchableOpacity>
 
-        <Image source={require('../assets/logo.png')} style={styles.logo}/>
+        <Image source={require('../assets/logo2.png')} style={styles.logo}/>
 
         {rightBtn}
 

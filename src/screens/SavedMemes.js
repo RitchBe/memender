@@ -35,6 +35,9 @@ class SavedMemes extends Component {
   )
 
   fetchSavedMemes = () => {
+    this.setState({
+      savedMemes: []
+    })
     SInfo.getItem('accessToken' ,{}).then(accessToken => {
       if (accessToken) {
         fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes', {
@@ -118,7 +121,7 @@ class SavedMemes extends Component {
           method: 'DELETE',
           headers: new Headers({
             'Content-Type': 'application/json',
-            'authorization': this.props.userSub,
+            'authorization': accessToken,
           }),
           cache: 'default'
         })
@@ -137,7 +140,19 @@ class SavedMemes extends Component {
   }
 
   componentDidMount() {
-    this.fetchSavedMemes()
+    const { navigation } = this.props;
+
+    this.willFocusListener = navigation.addListener(
+      'willFocus',
+      () => {
+        this.fetchSavedMemes()
+
+      }
+    )
+  }
+
+  componentWillUnmount() {
+    this.willFocusListener.remove();
   }
 
   openDrawer = () => {
@@ -153,20 +168,30 @@ class SavedMemes extends Component {
   }
   render() {
     const {savedMemes} = this.state;
+    console.log(savedMemes)
+    console.log(savedMemes.length)
+
+    if (savedMemes.length > 0) {
+      content = <FlatList
+        style={{flex: 1}}
+        renderItem = {this.renderItem}
+        data= {savedMemes}
+        keyExtractor = {meme => meme.memeId}
+        showsVerticalScrollIndicator={false}
+        onEndReachedThreshold={0.5}
+        onEndReached={this.fetchMoreSaved}
+        ListFooterComponent={this.renderFooter}
+        initialNumToRender={10}
+      />
+    } else {
+       content = <View style={styles.noSavedMeme}>
+                   <Text style={styles.placeholderText}>You don't have any meme saved yet.</Text>
+                 </View>
+    }
     return (
       <View style={styles.savedMemesContainer}>
         <Header onOpenDrawer={this.openDrawer} saved={true} />
-        <FlatList
-          style={{flex: 1}}
-          data= {savedMemes}
-          renderItem = {this.renderItem}
-          keyExtractor = {meme => meme.memeId}
-          showsVerticalScrollIndicator={false}
-          onEndReachedThreshold={0.5}
-          onEndReached={this.fetchMoreSaved}
-          ListFooterComponent={this.renderFooter}
-          initialNumToRender={10}
-        />
+        {content}
       </View>
     );
   }
@@ -220,6 +245,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
     width: wp('100%')
+  },
+  noSavedMeme: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  placeholderText: {
+    color: '#9FA8DA',
+    fontWeight: 'bold'
   }
 
 });
