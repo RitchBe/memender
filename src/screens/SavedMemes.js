@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   savedMemesContainer: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: "#E8EAF6"
+    backgroundColor: "#F2E5BF"
   },
 
   memeContainer: {
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   placeholderText: {
-    color: '#9FA8DA',
+    color: '#F2C94C',
     fontWeight: 'bold'
   }
 

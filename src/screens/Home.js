@@ -408,7 +408,7 @@ export default connect(mapStateToProps,mapDispatchToProps)(Home)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E8EAF6'
+    backgroundColor: '#F2E1B0'
   },
   navText: {
     color: "#C5CAE9",
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   footerTitle: {
-    color: '#9FA8DA',
+    color: '#F2C94C',
     fontWeight: '900',
     fontSize: 15,
   },

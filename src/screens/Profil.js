@@ -37,8 +37,8 @@ const TabNavigator = createBottomTabNavigator(
 }, {
   tabBarOptions: {
     activeTintColor: 'white',
-    inactiveTintColor: '#9fa8da',
-    activeBackgroundColor: '#9fa8da',
+    inactiveTintColor: '#F2C94C',
+    activeBackgroundColor: '#F2C94C',
     showLabel: false,
     style: {
       height: 55,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   labelNotFocused: {
-    color: '#9fa8da'
+    color: '#F2C94C'
   }
 })
 export default createAppContainer(TabNavigator);

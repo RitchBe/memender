@@ -215,7 +215,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Login)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E8EAF6',
+    backgroundColor: '#F2E5BF',
     justifyContent: 'center',
     alignItems: 'center'
   },

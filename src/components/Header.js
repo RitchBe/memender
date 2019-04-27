@@ -3,6 +3,8 @@ import { Text, View, Button, Platform, StyleSheet, TouchableOpacity, Image, Flat
 import {connect} from 'react-redux';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Feather';
+import LinearGradient from "react-native-linear-gradient";
+
 
 
 
@@ -38,10 +40,13 @@ sortOrder = (order) => {
        rightBtn =
                <View style={{zIndex: 500000}}>
                <TouchableOpacity onPress={this.showModal}>
-                <Icon name="award" size={25} color="#9FA8DA" style={{marginRight: 15}}/>
+                <Icon name="award" size={25} color="#F2C94C" style={{marginRight: 15}}/>
               </TouchableOpacity>
               <Modal visible={this.state.modalOpen} transparent={false} animationType='none'>
+                <LinearGradient colors={['#F2994A','#F2C94C']} style={{flex: 1}} >
+
                    <View style={styles.dropdown}>
+
                      <TouchableOpacity  style={styles.closeModal} onPress={this.showModal}>
                        <Text style={styles.closeFont}>x</Text>
                      </TouchableOpacity>
@@ -56,8 +61,12 @@ sortOrder = (order) => {
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btnSort} onPress={() => this.sortOrder('weeklyBest')}>
                       <Text style={styles.modalText}>Weekly Best</Text>
+
                     </TouchableOpacity>
+
                   </View>
+                </LinearGradient>
+
                 </Modal>
             </View>
     } else if (this.props.uploaded == true) {
@@ -69,11 +78,12 @@ sortOrder = (order) => {
     return(
       <View style={styles.headerContainer}>
         <View style={styles.header}>
+          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
         <TouchableOpacity onPress={this.props.onOpenDrawer}>
           <Image style={{width: 25, height: 25, marginLeft: 15, padding: 5}} source={require('../assets/menu2.png')}/>
         </TouchableOpacity>
-
         <Image source={require('../assets/logo2.png')} style={styles.logo}/>
+      </View>
 
         {rightBtn}
 
@@ -112,15 +122,15 @@ const styles = StyleSheet.create({
     width: 150,
     alignSelf: 'center',
     justifyContent: 'center',
+    marginLeft: 10
   },
   dropdown: {
     flex: 1,
-    backgroundColor: '#9fa8da',
     justifyContent: 'center',
     alignItems: 'center',
   },
   btnSort: {
-    color: "#E8EAF6",
+    color: "white",
   },
   closeModal: {
     position: 'absolute',
@@ -129,7 +139,7 @@ const styles = StyleSheet.create({
     padding: 20
   },
   closeFont: {
-    color: "#E8EAF6",
+    color: "white",
     fontSize: 25
   },
   modalText: {

@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     height: hp('90%')
   },
   infoText: {
-    color: '#9FA8DA',
+    color: '#F2C94C',
     fontWeight: 'bold',
     fontSize: 17,
     textAlign: 'center'

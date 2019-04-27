@@ -51,8 +51,8 @@ class CustomDrawer extends Component {
         <LinearGradient
             colors={[
               // #4e54c8
-              // "#9FA8DA",
-              // '#8f94fb',
+              "#9FA8DA",
+              '#8f94fb',
 
               // '#bc4e9c',
               // '#f80759'
@@ -60,8 +60,8 @@ class CustomDrawer extends Component {
               // '#7F00FF',
               // '#E100FF'
 
-              '#F2994A',
-              '#F2C94C'
+              // '#F2994A',
+              // '#F2C94C'
 
               // '#FFAFBD',
               // '#ffc3a0'
@@ -79,7 +79,7 @@ class CustomDrawer extends Component {
         </TouchableOpacity>
         </View>
         <DrawerItems
-        inactiveTintColor='#E8EAF6'
+        inactiveTintColor='white'
         activeTintColor='#F2C94C'
         labelStyle={{fontSize: 20}}
         activeBackgroundColor='#E8EAF6'
