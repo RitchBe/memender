@@ -45,7 +45,7 @@ export default class SaveIcon extends Component {
       //save in savedMemes Array
       SInfo.getItem('accessToken' ,{}).then(accessToken => {
         if (accessToken) {
-          fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes', {
+          fetch('https://www.memender.io/api/users/' + this.props.userSub + '/savedmemes', {
             method: 'POST',
             headers: new Headers({
               'Content-Type': "application/json",

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, Platform, StyleSheet, TouchableOpacity, Image, FlatList, Share, ActivityIndicator } from 'react-native';
+import { Text, View, Button, Platform, StyleSheet, TouchableOpacity, Image, FlatList, Share, ActivityIndicator, Animated } from 'react-native';
 import DeviceInfo from "react-native-device-info";
 import SInfo from "react-native-sensitive-info";
 import Auth0 from "react-native-auth0";
@@ -30,7 +30,12 @@ import {vote} from '../utils/utils'
 import {checkUser} from '../utils/utils'
 
 import Header from '../components/Header';
-import SaveIcon from '../components/SaveIcon'
+import SaveIcon from '../components/SaveIcon';
+import UserCard from '../components/UserCard'
+
+
+import {mainColor, mainColor2, details, lightColor} from '../utils/colors'
+
 
 
 
@@ -48,9 +53,10 @@ class Home extends Component {
     memesTest: [],
     seenMeme: [],
     order: 'random',
-    countBest: 1,
+    countBest: 0,
     count: 0,
-    countAds: 0
+    countAds: 0,
+    fadeAnim: new Animated.Value(0)
   }
 
   handleShare = currentMemes => {
@@ -98,7 +104,7 @@ class Home extends Component {
     console.log(result)
     SInfo.getItem('accessToken', {}).then(accessToken => {
       if (accessToken) {
-            fetch('http://192.168.0.19:3000/api/memes/', {
+            fetch('http://192.168.1.92:3000/api/memes/', {
               method: 'POST',
               headers: new Headers({
                 'Content-Type': 'application/json',
@@ -130,7 +136,7 @@ class Home extends Component {
        console.log(' i am the sub from reducer');
        console.log(this.props.userSub)
        //http://192.168.0.19:3000
-        fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub, {
+        fetch('http://192.168.1.92:3000/api/memes/' + this.props.userSub, {
           method: 'GET',
           headers: new Headers({
             'Content-Type': 'application/json',
@@ -190,31 +196,35 @@ class Home extends Component {
   }
 
   getSortedMeme = (order) => {
-    SInfo.getItem('accessToken' ,{}).then(accessToken => {
-      if (accessToken) {
-        fetch('http://192.168.0.19:3000/api/memes/' + this.props.userSub + '/' + order + '?next=' + this.state.countBest, {
-          method: 'GET',
-          headers: new Headers({
-            'Content-Type': 'application/json',
-            'authorization': accessToken,
-          }),
-          cache: 'default'
-        })
-        .then(r => r.json().then(json => ({pk: r.ok, status: r.status, json: json})))
-        .then(response => {
-          if (!response || response.status !== 200) {
-            throw Error(response.json.message)
-          }
-          console.log(response)
-          response.json.map((meme) => (
+      console.log('getting there')
+      console.log(this.state.countBest)
+      SInfo.getItem('accessToken' ,{}).then(accessToken => {
+        if (accessToken) {
+          fetch('http://192.168.1.92:3000/api/memes/' + this.props.userSub + '/' + this.state.order + '?next=' + this.state.countBest, {
+            method: 'GET',
+            headers: new Headers({
+              'Content-Type': 'application/json',
+              'authorization': accessToken,
+            }),
+            cache: 'default'
+          })
+          .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+          .then(response => {
+            if (!response || response.status !== 200) {
+              throw Error(response.json.message)
+            }
+            console.log(response)
+            response.json.map((meme) => (
+              this.setState({
+                memesTest: [...this.state.memesTest, meme]
+              })
+            ))
             this.setState({
-              memesTest: [...this.state.memesTest, meme]
+              countBest: this.state.countBest + 1
             })
-          ))
-        })
-      }
-    })
-
+          })
+        }
+      })
   }
 
   sortMemes = (order) => {
@@ -229,7 +239,7 @@ class Home extends Component {
       this.setState({
         memesTest: [],
         order: "bestOfAllTime",
-        countBest: 1
+        countBest: 0
       })
       this.getSortedMeme('bestofalltime')
     }
@@ -237,7 +247,7 @@ class Home extends Component {
       this.setState({
         memesTest: [],
         order: "monthlyBest",
-        countBest: 1
+        countBest: 0
       })
       this.getSortedMeme('monthlybest')
     }
@@ -245,7 +255,7 @@ class Home extends Component {
       this.setState({
         memesTest: [],
         order: "weeklyBest",
-        countBest: 1
+        countBest: 0
       })
       this.getSortedMeme('weeklybest')
     }
@@ -265,32 +275,54 @@ class Home extends Component {
     }
   }
 
-
-
 openDrawer = () => {
   console.log('hei')
   this.props.navigation.toggleDrawer();
 }
 
+renderItem = ({item}) => (
+  <UserCard item={item} onDelete={this.deleteMeme}/>
+)
+
   render() {
     var cl = new cloudinary.Cloudinary({cloud_name: "db7eqzno0", secure: true, context: true,image_metadata: "true"});
-    const {memesTest} = this.state;
+    const {memesTest, fadeAnim} = this.state;
 
     return (
       <View style={styles.container}>
-      <Header onOpenDrawer={this.openDrawer} home={true} sortMemes={(order) => {this.sortMemes(order)}}/>
-
-
-        <CardStack style={styles.content} renderNoMoreCards={() =>
-          <ActivityIndicator color="#9FA8DA" style={{margin: 100}} size="large" />} ref={swiper => {
+        <Header  style={{shadowOffset: { width: 10, height: 10 },  shadowColor: 'black', shadowOpacity: 1.0, elevation: 3, backgroundColor: 'black'}} onOpenDrawer={this.openDrawer} home={true} sortMemes={(order) => {this.sortMemes(order)}}/>
+        {this.state.order === 'random' &&
+          <CardStack style={styles.content}  renderNoMoreCards={() =>
+            <ActivityIndicator color={mainColor2} style={{margin: 100}} size="large" />} ref={swiper => {
             this.swiper = swiper
-          }}
-          onSwipedRight={() => {
-          }}
-          onSwipedLeft={() => {
+            }}
 
+            onSwipedRight={() => {
+            }}
 
-          }}
+            onSwipedLeft={() => {
+            }}
+
+            onSwipeStart={() => {
+              console.log('statign')
+              Animated.timing(                  // Animate over time
+               this.state.fadeAnim,            // The animated value to drive
+               {
+                 toValue: 1,                   // Animate to opacity: 1 (opaque)
+                 duration: 1000,              // Make it take a while
+               }
+             ).start();
+            }}
+
+            onSwipeEnd={() => {
+              Animated.timing(                  // Animate over time
+               this.state.fadeAnim,            // The animated value to drive
+               {
+                 toValue: 0,                   // Animate to opacity: 1 (opaque)
+                 duration: 0,              // Make it take a while
+               }
+             ).start();
+            }}
           >
 
             {this.state.memesTest.map(
@@ -305,8 +337,7 @@ openDrawer = () => {
               //        </View>
               //      </Card>
               //      ) : (
-
-              this.state.seenMeme.indexOf(meme) === -1 &&
+              // this.state.seenMeme.indexOf(meme) === -1 &&
                 <Card
                   key={meme._id}
                   style={[styles.card, styles.card1]}
@@ -315,9 +346,7 @@ openDrawer = () => {
                     // this.checkForAds()
                     this.checkCountMemes(meme, index)
                     vote('upvote', meme, this.props.userSub)
-
-                  }
-                }
+                  }}
                   onSwipedLeft={() => {
                     // This will be for the ads when deploy
                     // this.checkForAds()
@@ -328,40 +357,64 @@ openDrawer = () => {
                    <View style={styles.saveWrapper} >
                      <SaveIcon userSub={this.props.userSub} meme={meme}/>
                    </View>
-                <View style={{flex: 1}}>
-                  <Image style={styles.images} source={{uri: meme.url}}/>
-                </View>
+
+                  <View style={{flex: 1}}>
+                    <Image style={styles.images} source={{uri: meme.url}}/>
+                  </View>
 
                  <View style={styles.votesContainer}>
-                <View style={styles.votes}>
-                  <TouchableOpacity style={styles.iconButton}>
-                    <Text style={[styles.textVotes, styles.upvote, styles.icon]} onPress={() => {
+                  <View style={styles.votes}>
+                    <TouchableOpacity style={styles.iconButton}>
+                      <Text style={[styles.textVotes, styles.upvote, styles.icon]} onPress={() => {
                       this.swiper.swipeRight();
-
-                    }}>{meme.upvote} ❤️</Text>
-                  </TouchableOpacity>
+                      }}>
+                      {meme.upvote} ❤️
+                      </Text>
+                    </TouchableOpacity>
 
                   <TouchableOpacity onPress={() => {
                     this.handleShare(meme)
                   }}>
-                    <Text style={[styles.textVotes, styles.upvote, styles.icon]}>🎁</Text>
-                </TouchableOpacity>
+                    <Text style={[styles.textVotes, styles.upvote, styles.icon]}>
+                      🎁
+                    </Text>
+                  </TouchableOpacity>
+
                   <TouchableOpacity>
                     <Text style={[styles.textVotes, styles.downvote, styles.icon]} onPress={() => {
                       // this.handleDownvote(meme)
                       this.swiper.swipeLeft();
                       }}>
-                        {meme.downvote} 👎</Text>
+                        {meme.downvote} 👎
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>
+              {/* <Animated.View style={styles.animatedLabel, {opacity: fadeAnim}}>
+                <Text style={styles.labelStyle}>Woring</Text>
+              </Animated.View> */}
                 </Card>
-                 )
-                )
+                 ))
                // )
              }
-
       </CardStack>
+        }
+
+        {this.state.order != 'random' &&
+          <View style={styles.topList}>
+            <FlatList
+              style={{flex:1}}
+              data={this.state.memesTest}
+              renderItem={this.renderItem}
+              keyExtractor={meme => meme._id}
+              showsVerticalScrollIndicator={false}
+              onEndReachedThreshold={0.5}
+              onEndReached={this.getSortedMeme}
+              initialNumToRender={10}
+            />
+          </View>
+        }
+
 
       <View style={styles.footerContainer}>
       <TouchableOpacity style={styles.footer} onPress={this.submit}>
@@ -408,7 +461,11 @@ export default connect(mapStateToProps,mapDispatchToProps)(Home)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2E1B0'
+    backgroundColor: lightColor
+  },
+  topList: {
+    flex: 1,
+    alignItems: 'center'
   },
   navText: {
     color: "#C5CAE9",
@@ -435,8 +492,9 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flex: 5,
     backgroundColor: '#FE474C',
-    borderRadius: 5,
-    zIndex: 0
+    borderRadius: 10,
+    zIndex: 0,
+    elevation: 5
   },
   card1: {
     backgroundColor: 'white'
@@ -507,10 +565,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   footerTitle: {
-    color: '#F2C94C',
+    color: mainColor2,
     fontWeight: '900',
     fontSize: 15,
   },
+  animatedLabel: {
+    position: 'absolute',
+    top: hp('45%'),
+    left: wp('1%'),
+    height: hp('100%'),
+    width: wp('100%'),
+    zIndex: 100
 
+  },
+  labelStyle: {
+    position: 'absolute',
+    top: hp('-70%'),
+    left: wp('-25%'),
+    height: hp('100%'),
+    width: wp('100%'),
+    fontSize: 30,
+    zIndex: 100
+  }
 
 })

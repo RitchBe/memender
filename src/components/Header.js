@@ -4,12 +4,7 @@ import {connect} from 'react-redux';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from "react-native-linear-gradient";
-
-
-
-
-
-
+import {mainColor, mainColor2, details, logo, menuHamburger} from '../utils/colors'
 
 
 
@@ -40,10 +35,10 @@ sortOrder = (order) => {
        rightBtn =
                <View style={{zIndex: 500000}}>
                <TouchableOpacity onPress={this.showModal}>
-                <Icon name="award" size={25} color="#F2C94C" style={{marginRight: 15}}/>
+                <Icon name="award" size={25} color={mainColor2} style={{marginRight: 15}}/>
               </TouchableOpacity>
               <Modal visible={this.state.modalOpen} transparent={false} animationType='none'>
-                <LinearGradient colors={['#F2994A','#F2C94C']} style={{flex: 1}} >
+                <LinearGradient colors={[mainColor,mainColor2]} style={{flex: 1}} >
 
                    <View style={styles.dropdown}>
 
@@ -78,12 +73,12 @@ sortOrder = (order) => {
     return(
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+
         <TouchableOpacity onPress={this.props.onOpenDrawer}>
-          <Image style={{width: 25, height: 25, marginLeft: 15, padding: 5}} source={require('../assets/menu2.png')}/>
+          <Image style={{width: 25, height: 25, marginLeft: 15, padding: 5}} source={menuHamburger}/>
         </TouchableOpacity>
-        <Image source={require('../assets/logo2.png')} style={styles.logo}/>
-      </View>
+        <Image source={logo} style={styles.logo}/>
+
 
         {rightBtn}
 
@@ -103,13 +98,14 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: 'center',
     backgroundColor: 'white',
-    shadowColor: 'lightgrey',
+    shadowColor: 'pink',
     shadowOpacity: 1,
     shadowRadius: 5,
     shadowOffset: {
       width: 5,
       height: 5
     },
+    zIndex: 15,
   },
   header:{
     flex: 1,

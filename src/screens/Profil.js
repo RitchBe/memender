@@ -3,6 +3,8 @@ import { Text, View, Image, Icon, StyleSheet } from 'react-native';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import UploadedScreen from './Uploaded';
 import SavedMemeScreen from './SavedMemes';
+import {mainColor, mainColor2, details} from '../utils/colors'
+
 
 
 
@@ -37,8 +39,8 @@ const TabNavigator = createBottomTabNavigator(
 }, {
   tabBarOptions: {
     activeTintColor: 'white',
-    inactiveTintColor: '#F2C94C',
-    activeBackgroundColor: '#F2C94C',
+    inactiveTintColor: mainColor2,
+    activeBackgroundColor: mainColor2,
     showLabel: false,
     style: {
       height: 55,
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   labelNotFocused: {
-    color: '#F2C94C'
+    color: mainColor2
   }
 })
 export default createAppContainer(TabNavigator);

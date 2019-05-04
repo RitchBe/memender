@@ -46,7 +46,9 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     marginVertical: 20,
-    borderRadius: 5
+    borderRadius: 10,
+    elevation: 5,
+    marginHorizontal: 5
   },
   images: {
     resizeMode: "contain",

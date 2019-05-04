@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import Header from '../components/Header'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {mainColor, mainColor2, details, lightColor} from '../utils/colors'
+
 
 export default class Info extends Component {
   openDrawer = () => {
@@ -32,7 +34,7 @@ const styles = StyleSheet.create({
     height: hp('90%')
   },
   infoText: {
-    color: '#F2C94C',
+    color: mainColor2,
     fontWeight: 'bold',
     fontSize: 17,
     textAlign: 'center'

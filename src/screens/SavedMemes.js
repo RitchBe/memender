@@ -16,6 +16,9 @@ import SInfo from "react-native-sensitive-info";
 import Header from '../components/Header';
 import SavedCard from '../components/SavedCard';
 
+import {mainColor, mainColor2, details, lightColor} from '../utils/colors'
+
+
 import {connect} from 'react-redux';
 
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
@@ -40,7 +43,7 @@ class SavedMemes extends Component {
     })
     SInfo.getItem('accessToken' ,{}).then(accessToken => {
       if (accessToken) {
-        fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes', {
+        fetch('https://www.memender.io/api/users/' + this.props.userSub + '/savedmemes', {
           method: 'GET',
           headers: new Headers({
             'Content-Type': 'application/json',
@@ -78,7 +81,7 @@ class SavedMemes extends Component {
             if (savedMemes.length % 10 === 0 && savedMemes.length !== 0) {
               this.setState({fetching_from_server: true}, () => {
               console.log('should be here')
-              fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes?next=' + this.state.count, {
+              fetch('https://www.memender.io/api/users/' + this.props.userSub + '/savedmemes?next=' + this.state.count, {
                 method: 'GET',
                 headers: new Headers({
                   'Content-Type': 'application/json',
@@ -117,7 +120,7 @@ class SavedMemes extends Component {
   deleteSavedMeme = (meme) => {
     SInfo.getItem('accessToken' ,{}).then(accessToken => {
       if (accessToken) {
-        fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/savedmemes/' + meme.memeId, {
+        fetch('https://www.memender.io/api/users/' + this.props.userSub + '/savedmemes/' + meme.memeId, {
           method: 'DELETE',
           headers: new Headers({
             'Content-Type': 'application/json',
@@ -161,7 +164,7 @@ class SavedMemes extends Component {
 
   renderFooter = () => {
     if (this.state.fetching_from_server === true) {
-      return <ActivityIndicator color="#9FA8DA" style={{margin: 100}} size="large" />
+      return <ActivityIndicator color={mainColor2} style={{margin: 100}} size="large" />
     } else {
       return null;
     }
@@ -209,7 +212,7 @@ const styles = StyleSheet.create({
   savedMemesContainer: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: "#F2E5BF"
+    backgroundColor: lightColor
   },
 
   memeContainer: {
@@ -252,7 +255,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   placeholderText: {
-    color: '#F2C94C',
+    color: mainColor2,
     fontWeight: 'bold'
   }
 

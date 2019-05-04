@@ -25,6 +25,9 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { NativeAdsManager, AdSettings, BannerView} from 'react-native-fbads';
 import AdComponent from '../components/AdComponent';
 
+import {mainColor, mainColor2, details, lightColor} from '../utils/colors'
+
+
 
 
 const adsManager = new NativeAdsManager('432030290881411_432032567547850', 10)
@@ -55,7 +58,7 @@ class Uploaded extends Component {
     SInfo.getItem('accessToken' ,{}).then(accessToken => {
       if (accessToken) {
         const {userMemes} = this.state;
-          fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes', {
+          fetch('https://www.memender.io/api/users/' + this.props.userSub + '/memes', {
                   method: 'GET',
                   headers: new Headers({
                     'Content-Type': 'application/json',
@@ -89,7 +92,7 @@ class Uploaded extends Component {
               if (userMemes.length % 10 === 0 && userMemes.length !== 0) {
                 this.setState({fetching_from_server: true}, () => {
                 console.log('should be here')
-                fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes?next=' + userMemes[userMemes.length -1].date, {
+                fetch('https://www.memender.io/api/users/' + this.props.userSub + '/memes?next=' + userMemes[userMemes.length -1].date, {
                   method: 'GET',
                   headers: new Headers({
                     'Content-Type': 'application/json',
@@ -129,7 +132,7 @@ class Uploaded extends Component {
   deleteMeme = (meme) => {
     SInfo.getItem('accessToken' ,{}).then(accessToken => {
       if (accessToken) {
-        fetch('http://192.168.0.19:3000/api/users/' + this.props.userSub + '/memes/' + meme._id, {
+        fetch('https://www.memender.io/api/users/' + this.props.userSub + '/memes/' + meme._id, {
           method: 'DELETE',
           headers: new Headers({
             'Content-Type': 'application/json',
@@ -170,7 +173,7 @@ class Uploaded extends Component {
   }
   renderFooter = () => {
     if (this.state.fetching_from_server === true) {
-      return <ActivityIndicator color="#9FA8DA" style={{margin: 100}} size="large" />
+      return <ActivityIndicator color={mainColor2} style={{margin: 100}} size="large" />
     } else {
       return null;
     }
@@ -227,7 +230,7 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: "#F2E5BF"
+    backgroundColor: lightColor
   },
 
   memeContainer: {
@@ -276,7 +279,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   placeholderText: {
-    color: '#F2C94C',
+    color: mainColor2,
     fontWeight: 'bold'
   }
 

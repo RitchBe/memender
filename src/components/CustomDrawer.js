@@ -11,6 +11,7 @@ import Config from "react-native-config";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Octicons';
 import LinearGradient from "react-native-linear-gradient";
+import {mainColor, mainColor2, details} from '../utils/colors'
 
 
 
@@ -50,39 +51,25 @@ class CustomDrawer extends Component {
       <ScrollView>
         <LinearGradient
             colors={[
-              // #4e54c8
-              "#9FA8DA",
-              '#8f94fb',
-
-              // '#bc4e9c',
-              // '#f80759'
-
-              // '#7F00FF',
-              // '#E100FF'
-
-              // '#F2994A',
-              // '#F2C94C'
-
-              // '#FFAFBD',
-              // '#ffc3a0'
-
+              mainColor,
+              mainColor2
             ]}
             style={{flex: 1}}
             >
         <View style={styles.drawerContainer}>
         <View style={styles.logOutContainer}>
         <TouchableOpacity style={styles.infoBtn} onPress={() => this.props.navigation.navigate('Info')}>
-        <Icon name="info" size={20} color='#E8EAF6' />
+        <Icon name="info" size={20} color={details} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.logOutBtn} onPress={this.logOut}>
-          <Icon name="sign-out" size={20} color='#E8EAF6' />
+          <Icon name="sign-out" size={20} color={details} />
         </TouchableOpacity>
         </View>
         <DrawerItems
-        inactiveTintColor='white'
-        activeTintColor='#F2C94C'
+        inactiveTintColor={details}
+        activeTintColor={mainColor2}
         labelStyle={{fontSize: 20}}
-        activeBackgroundColor='#E8EAF6'
+        activeBackgroundColor={details}
         itemsContainerStyle={{marginVertical: 60}}
         iconContainerStyle={{marginVertical: 60}}
         {...this.props}

@@ -9,6 +9,8 @@ import RNRestart from "react-native-restart";
 import CheckBox from 'react-native-checkbox';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {connect} from 'react-redux';
+import {mainColor, mainColor2, details, lightColor} from '../utils/colors'
+
 
 
 const auth0 = new Auth0({
@@ -119,7 +121,7 @@ class Login extends Component {
             uncheckedImage={require('../assets/unchecked.png')}
             onChange={(checked) =>this.setState({termAccept: !termAccept})}
           />
-          <Text style={{color: 'darkgray'}}>I have read and accepted the <Text style={{color:'#9FA8DA', textDecorationLine: 'underline'}}>Privacy Policy</Text> and the <Text style={{color:'#9FA8DA', textDecorationLine: 'underline'}}>Term and conditions</Text> of Memender</Text>
+          <Text style={{color: 'darkgray'}}>I have read and accepted the <Text style={{color: mainColor2, textDecorationLine: 'underline'}}>Privacy Policy</Text> and the <Text style={{color: mainColor2, textDecorationLine: 'underline'}}>Term and conditions</Text> of Memender</Text>
         </View>
           {btns}
         </View>
@@ -169,7 +171,7 @@ class Login extends Component {
   createUser = data => {
     console.log('hi from createuser')
     console.log(data)
-    fetch('http://192.168.0.19:3000/api/users', {
+    fetch('https://www.memender.io/api/users', {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json'
@@ -215,7 +217,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Login)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2E5BF',
+    backgroundColor: lightColor,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -232,7 +234,7 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: 'rgb(240,240,240)',
-    backgroundColor: '#9FA8DA',
+    backgroundColor:mainColor2,
     paddingHorizontal: 8,
     paddingVertical: 9,
     width: 110,
@@ -280,7 +282,7 @@ const styles = StyleSheet.create({
   },
   textCard: {
     fontSize: 18,
-    color: '#9FA8DA',
+    color: mainColor2,
     width: wp('75%')
   }
 
