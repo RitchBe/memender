@@ -24,11 +24,11 @@
 
 //CREAM
 export var mainColor = '#FFAFBD'
-export var mainColor2 = '#ffc3a0'
+export var mainColor2 = '#CFB4F1'
 export var details = 'white'
-export var lightColor = '#fff4ed'
+export var lightColor = '#F4F1F6'
 
-export var logo = require('../assets/logoCream.png')
+export var logo = require('../assets/newLogo.png')
 export var menuHamburger = require('../assets/creamMenu.png')
 
 //SOFTWINTER

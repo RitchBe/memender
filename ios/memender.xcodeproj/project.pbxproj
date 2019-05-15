@@ -71,6 +71,7 @@
 		9897E7BC346B474488203D14 /* libReactNativeAdsFacebook.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13F681AE6F3B48EF8074624B /* libReactNativeAdsFacebook.a */; };
 		4C275F9926884AF5AE4A2AF7 /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BA93787854749ACABD74B6A /* libimageCropPicker.a */; };
 		43AE23431B8A4671B8819FD0 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7CFB65416C4362B4F3095D /* libBVLinearGradient.a */; };
+		0A511F02AE92423E986E73CB /* libRNTextGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 452A91A792C746D1A3F631D9 /* libRNTextGradient.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -423,6 +424,8 @@
 		6BA93787854749ACABD74B6A /* libimageCropPicker.a */ = {isa = PBXFileReference; name = "libimageCropPicker.a"; path = "libimageCropPicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		23DE32A6173B4380BA160AEF /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; name = "BVLinearGradient.xcodeproj"; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		5B7CFB65416C4362B4F3095D /* libBVLinearGradient.a */ = {isa = PBXFileReference; name = "libBVLinearGradient.a"; path = "libBVLinearGradient.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		A23E1A423D354A85858C5A35 /* RNTextGradient.xcodeproj */ = {isa = PBXFileReference; name = "RNTextGradient.xcodeproj"; path = "../node_modules/react-native-text-gradient/ios/RNTextGradient.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		452A91A792C746D1A3F631D9 /* libRNTextGradient.a */ = {isa = PBXFileReference; name = "libRNTextGradient.a"; path = "libRNTextGradient.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -464,6 +467,7 @@
 				9897E7BC346B474488203D14 /* libReactNativeAdsFacebook.a in Frameworks */,
 				4C275F9926884AF5AE4A2AF7 /* libimageCropPicker.a in Frameworks */,
 				43AE23431B8A4671B8819FD0 /* libBVLinearGradient.a in Frameworks */,
+				0A511F02AE92423E986E73CB /* libRNTextGradient.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -670,6 +674,7 @@
 				4F593437CCFF449FAD444586 /* ReactNativeAdsFacebook.xcodeproj */,
 				62C87F4F88AB41F2AABB6900 /* imageCropPicker.xcodeproj */,
 				23DE32A6173B4380BA160AEF /* BVLinearGradient.xcodeproj */,
+				A23E1A423D354A85858C5A35 /* RNTextGradient.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1353,6 +1358,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1369,6 +1375,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios/**",
 				);
 			};
 			name = Debug;
@@ -1407,6 +1414,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1423,6 +1431,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios/**",
 				);
 			};
 			name = Release;
@@ -1458,6 +1467,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios/**",
 				);
 			};
 			name = Debug;
@@ -1492,6 +1502,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios/**",
 				);
 			};
 			name = Release;
@@ -1538,6 +1549,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1554,6 +1566,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios/**",
 				);
 			};
 			name = Debug;
@@ -1600,6 +1613,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1616,6 +1630,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios/**",
 				);
 			};
 			name = Release;
@@ -1661,6 +1676,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1677,6 +1693,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios/**",
 				);
 			};
 			name = Debug;
@@ -1722,6 +1739,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1738,6 +1756,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fbads/ios/ReactNativeAdsFacebook",
 					"$(SRCROOT)/../node_modules/react-native-image-crop-picker/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-text-gradient/ios/**",
 				);
 			};
 			name = Release;

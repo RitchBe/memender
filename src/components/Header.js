@@ -3,8 +3,10 @@ import { Text, View, Button, Platform, StyleSheet, TouchableOpacity, Image, Flat
 import {connect} from 'react-redux';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Feather';
-import LinearGradient from "react-native-linear-gradient";
 import {mainColor, mainColor2, details, logo, menuHamburger} from '../utils/colors'
+import LinearGradient from "react-native-linear-gradient";
+
+
 
 
 
@@ -49,13 +51,13 @@ sortOrder = (order) => {
                       <Text style={styles.modalText}>Random</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btnSort} onPress={() => this.sortOrder('bestOfAllTime')}>
-                      <Text style={styles.modalText}>Best of all Time</Text>
+                      <Text style={styles.modalText}>All Time 100</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btnSort} onPress={() => this.sortOrder('monthlyBest')}>
-                      <Text style={styles.modalText}>Monthly Best</Text>
+                      <Text style={styles.modalText}>Monthly'100</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btnSort} onPress={() => this.sortOrder('weeklyBest')}>
-                      <Text style={styles.modalText}>Weekly Best</Text>
+                      <Text style={styles.modalText}>Weekly'100</Text>
 
                     </TouchableOpacity>
 
@@ -78,6 +80,8 @@ sortOrder = (order) => {
           <Image style={{width: 25, height: 25, marginLeft: 15, padding: 5}} source={menuHamburger}/>
         </TouchableOpacity>
         <Image source={logo} style={styles.logo}/>
+
+
 
 
         {rightBtn}
@@ -113,9 +117,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
+  titleLogo: {
+    fontFamily: 'ConcertOne-Regular',
+  },
   logo: {
     height: 30,
-    width: 150,
+    width: 193,
     alignSelf: 'center',
     justifyContent: 'center',
     marginLeft: 10
@@ -145,6 +152,5 @@ const styles = StyleSheet.create({
   },
   btnSort: {
     padding: 15,
-
   }
 })

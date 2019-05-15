@@ -9,7 +9,7 @@ import RNRestart from "react-native-restart";
 import CheckBox from 'react-native-checkbox';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {connect} from 'react-redux';
-import {mainColor, mainColor2, details, lightColor} from '../utils/colors'
+import {mainColor, mainColor2, details, lightColor, logo} from '../utils/colors'
 
 
 
@@ -101,14 +101,14 @@ class Login extends Component {
           <View style={styles.container}>
         <View style={styles.card}>
           <View style={styles.cardContent}>
-            <Image source={require('../assets/logo.png')} style={styles.logo}/>
+            <Image source={logo} style={styles.logo}/>
             <Text style={styles.textCard}>Find the best memes, funny picture around. Swipe for the one you liked
             </Text>
             <View style={styles.votesContainer}>
               <View style={styles.votes}>
-                <Text style={[styles.textVotes, styles.upvote, styles.icon]}>❤️</Text>
+                {/*<Text style={[styles.textVotes, styles.upvote, styles.icon]}>❤️</Text>
                 <Text style={[styles.textVotes, styles.upvote, styles.icon]}>🎁</Text>
-                <Text style={[styles.textVotes, styles.downvote, styles.icon]}>👎</Text>
+                <Text style={[styles.textVotes, styles.downvote, styles.icon]}>👎</Text>*/}
               </View>
             </View>
           </View>
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   btnText: {
-    color: 'rgb(240,240,240)',
+    color: 'white',
     backgroundColor:mainColor2,
     paddingHorizontal: 8,
     paddingVertical: 9,

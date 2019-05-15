@@ -56,7 +56,8 @@ class Home extends Component {
     countBest: 0,
     count: 0,
     countAds: 0,
-    fadeAnim: new Animated.Value(0)
+    fadeAnim: new Animated.Value(0),
+    fetching_from_server: false
   }
 
   handleShare = currentMemes => {
@@ -104,7 +105,7 @@ class Home extends Component {
     console.log(result)
     SInfo.getItem('accessToken', {}).then(accessToken => {
       if (accessToken) {
-            fetch('http://192.168.1.92:3000/api/memes/', {
+            fetch('https://www.memender.io/api/memes/', {
               method: 'POST',
               headers: new Headers({
                 'Content-Type': 'application/json',
@@ -136,7 +137,7 @@ class Home extends Component {
        console.log(' i am the sub from reducer');
        console.log(this.props.userSub)
        //http://192.168.0.19:3000
-        fetch('http://192.168.1.92:3000/api/memes/' + this.props.userSub, {
+        fetch('https://www.memender.io/api/memes/' + this.props.userSub, {
           method: 'GET',
           headers: new Headers({
             'Content-Type': 'application/json',
@@ -180,13 +181,6 @@ class Home extends Component {
       }
     } else {
       console.log(countBest)
-      this.setState({
-        countBest: countBest + 1
-      })
-      if (countBest % 5 === 0 && countBest > 0 ) {
-        console.log('while take some new now')
-        this.getSortedMeme(this.state.order);
-      }
     }
   }
 
@@ -198,31 +192,44 @@ class Home extends Component {
   getSortedMeme = (order) => {
       console.log('getting there')
       console.log(this.state.countBest)
+      if (this.state.countBest > 9) {
+        console.log('you got 100')
+        return;
+      }
       SInfo.getItem('accessToken' ,{}).then(accessToken => {
         if (accessToken) {
-          fetch('http://192.168.1.92:3000/api/memes/' + this.props.userSub + '/' + this.state.order + '?next=' + this.state.countBest, {
-            method: 'GET',
-            headers: new Headers({
-              'Content-Type': 'application/json',
-              'authorization': accessToken,
-            }),
-            cache: 'default'
-          })
-          .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
-          .then(response => {
-            if (!response || response.status !== 200) {
-              throw Error(response.json.message)
-            }
-            console.log(response)
-            response.json.map((meme) => (
-              this.setState({
-                memesTest: [...this.state.memesTest, meme]
+          if (!this.state.fetching_from_server) {
+            this.setState({fetching_from_server: true}, () => {
+              fetch('https://www.memender.io/api/memes/' + this.props.userSub + '/' + this.state.order + '?next=' + this.state.countBest, {
+                method: 'GET',
+                headers: new Headers({
+                  'Content-Type': 'application/json',
+                  'authorization': accessToken,
+                }),
+                cache: 'default'
               })
-            ))
-            this.setState({
-              countBest: this.state.countBest + 1
+              .then(r => r.json().then(json => ({ok: r.ok, status: r.status, json: json})))
+              .then(response => {
+                if (!response || response.status !== 200) {
+                  throw Error(response.json.message)
+                }
+                console.log(response)
+                response.json.map((meme) => (
+                  this.setState({
+                    memesTest: [...this.state.memesTest, meme],
+                    fetching_from_server: false
+                  })
+                ))
+                this.setState({
+                  countBest: this.state.countBest + 1
+                })
+              })
             })
-          })
+          } else {
+            this.setState({
+              fetching_from_server: true,
+            })
+          }
         }
       })
   }
@@ -283,6 +290,14 @@ openDrawer = () => {
 renderItem = ({item}) => (
   <UserCard item={item} onDelete={this.deleteMeme}/>
 )
+
+renderFooter = () => {
+  if (this.state.fetching_from_server === true) {
+    return <ActivityIndicator color={mainColor2} style={{margin: 100}} size="large" />
+  } else {
+    return null;
+  }
+}
 
   render() {
     var cl = new cloudinary.Cloudinary({cloud_name: "db7eqzno0", secure: true, context: true,image_metadata: "true"});
@@ -405,12 +420,14 @@ renderItem = ({item}) => (
             <FlatList
               style={{flex:1}}
               data={this.state.memesTest}
+              extraData={this.state}
               renderItem={this.renderItem}
               keyExtractor={meme => meme._id}
               showsVerticalScrollIndicator={false}
-              onEndReachedThreshold={0.5}
+              onEndReachedThreshold={0.9}
               onEndReached={this.getSortedMeme}
               initialNumToRender={10}
+              ListFooterComponent={this.renderFooter}
             />
           </View>
         }
