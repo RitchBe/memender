@@ -23,10 +23,13 @@
 // '#8f94fb',
 
 //CREAM
+
 export var mainColor = '#FFAFBD'
 export var mainColor2 = '#CFB4F1'
 export var details = 'white'
 export var lightColor = '#F4F1F6'
+export var textDetail = '#E27FA3'
+export var mainFont = "Raleway-Light"
 
 export var logo = require('../assets/newLogo.png')
 export var menuHamburger = require('../assets/creamMenu.png')

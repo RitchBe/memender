@@ -28,6 +28,8 @@
     "react-native-responsive-screen": "^1.2.1",
     "react-native-restart": "0.0.9",
     "react-native-sensitive-info": "^5.3.0",
+    "react-native-side-drawer": "^1.1.6",
+    "react-native-snap-carousel": "^3.7.5",
     "react-native-vector-icons": "^6.4.2",
     "react-navigation": "^3.5.1",
     "react-redux": "^6.0.1",

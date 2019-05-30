@@ -13,6 +13,7 @@ import thunk from 'redux-thunk'
 
 import Root from './Root';
 import Drawer from './Drawer';
+import TabNav from './TabNav'
 
 
 
@@ -23,7 +24,7 @@ class MainNav extends Component {
   render() {
     if (this.props.userIsLogged == true) {
       console.log('you r almost there')
-      nav = <Drawer/>
+      nav = <TabNav/>
     } else {
       console.log('this root')
       nav = <Root/>

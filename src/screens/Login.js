@@ -9,7 +9,9 @@ import RNRestart from "react-native-restart";
 import CheckBox from 'react-native-checkbox';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {connect} from 'react-redux';
-import {mainColor, mainColor2, details, lightColor, logo} from '../utils/colors'
+import {mainColor, mainColor2, details, lightColor, logo, textDetail, mainFont} from '../utils/colors'
+import Carousel, {Pagination} from 'react-native-snap-carousel';
+
 
 
 
@@ -26,7 +28,9 @@ class Login extends Component {
   state = {
     hasInitialized: false,
     termAccept: false,
-
+    currentIndex: 0,
+    cardData: ['https://res.cloudinary.com/dmbqzuhic/image/upload/v1557317584/ysq8rmllbdzdk46whh6s.jpg','https://res.cloudinary.com/dmbqzuhic/image/upload/v1557317584/kbtftc37fxi0vuesvifv.jpg','https://res.cloudinary.com/dmbqzuhic/image/upload/v1557317581/aa5enup62npm6cbltohn.jpg'],
+    activeSlide: 0
   };
 
   componentDidMount() {
@@ -73,57 +77,94 @@ class Login extends Component {
     })
   }
 
+
+
+  _renderItem({item, index}) {
+    console.log(item)
+    return(
+      <View style={{backgroundColor: mainColor, height: hp('55%'), borderRadius: 30}}>
+        <Image source={{uri: item}} style={styles.images} />
+      </View>
+    )
+  }
+
+  get pagination () {
+    const {cardData, activeSlide} = this.state;
+    return (
+      <Pagination
+        dotsLength={cardData.length}
+        activeDotIndex={activeSlide}
+        dotStyle={{width: 10, height: 10, borderRadius: 5, backgroundColor: textDetail}}
+        inactiveDotStyle={{backgroundColor: 'lightgray'}}
+        inactiveDotOpacity={0.4}
+        inactiveDotScale={0.6}
+        containerStyle={{height: 10, width: 40, marginVertical: 0}}
+        />
+    );
+  }
+
   render() {
-    const {termAccept, hasInitialized} = this.state
+    const {termAccept, hasInitialized, currentIndex} = this.state
+
     if (termAccept) {
       btns = <View style={{flexDirection: 'row'}}>
-                  <TouchableOpacity style={styles.btnContainer, {marginRight: 5}} onPress={this.login}>
+                  {/*<TouchableOpacity style={styles.btnContainer, {marginRight: 5}} onPress={this.login}>
                     <Text style={styles.btnText}>Login</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.btnContainer, {marginLeft: 5}} onPress={this.login}>
                     <Text style={styles.btnText}>Signup</Text>
+                  </TouchableOpacity>*/}
+                  <TouchableOpacity onPress={this.login}>
+                  <Image style={{width: 50, height: 50}} source={require('../assets/loginArrow.png')}/>
                   </TouchableOpacity>
                 </View>
     } else {
-      btns = <View style={{flexDirection: 'row'}}>
-                  <TouchableOpacity style={styles.btnContainer, {marginRight: 5}}>
+      btns = <View style={{flexDirection: 'row',marginBottom: 20}}>
+                  {/*<TouchableOpacity style={styles.btnContainer, {marginRight: 5}}>
                     <Text style={[styles.btnText, styles.btnTextNotAccepted]}>Login</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.btnContainer, {marginLeft: 5}}>
                     <Text style={[styles.btnText, styles.btnTextNotAccepted]}>Signup</Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity>*/}
+                  <Image style={{width: 50, height: 50}} source={require('../assets/noLoginArrow.png')}/>
                 </View>
     }
 
     return (
       <View style={styles.container}>
         {hasInitialized && (
-          <View style={styles.container}>
-        <View style={styles.card}>
-          <View style={styles.cardContent}>
-            <Image source={logo} style={styles.logo}/>
-            <Text style={styles.textCard}>Find the best memes, funny picture around. Swipe for the one you liked
+          <View style={styles.wrapper}>
+            <Image style={styles.logo} source={logo}/>
+
+            <Text style={styles.textCard}>
+              Find the best memes, funny picture around. Swipe for the one you like
             </Text>
-            <View style={styles.votesContainer}>
-              <View style={styles.votes}>
-                {/*<Text style={[styles.textVotes, styles.upvote, styles.icon]}>❤️</Text>
-                <Text style={[styles.textVotes, styles.upvote, styles.icon]}>🎁</Text>
-                <Text style={[styles.textVotes, styles.downvote, styles.icon]}>👎</Text>*/}
-              </View>
-            </View>
-          </View>
-        </View>
+
+        <View style={styles.carouselContainer}>
+        <Carousel
+          ref={(c) => {this._carousel = c;}}
+          data={this.state.cardData}
+          renderItem={this._renderItem}
+          sliderWidth={wp('100%')}
+          itemWidth={wp('65%')}
+          onSnapToItem={(index) => this.setState({activeSlide: index})}
+        />
+        {this.pagination}
+      </View>
+
+
         <View style={styles.terms}>
           <CheckBox
             checked={termAccept}
-            labelStyle={{width: 0}}
+            checkboxStyle={{width: 31, height: 31}}
+            labelStyle={{width: 0,marginRight: 25}}
             checkedImage={require('../assets/checked.png')}
             uncheckedImage={require('../assets/unchecked.png')}
             onChange={(checked) =>this.setState({termAccept: !termAccept})}
           />
-          <Text style={{color: 'darkgray'}}>I have read and accepted the <Text style={{color: mainColor2, textDecorationLine: 'underline'}}>Privacy Policy</Text> and the <Text style={{color: mainColor2, textDecorationLine: 'underline'}}>Term and conditions</Text> of Memender</Text>
+          <Text style={{color: 'darkgray', fontFamily: mainFont, fontSize: 14}}>I have read and accepted the <Text style={{color: textDetail, textDecorationLine: 'underline'}}>Privacy Policy</Text> and the <Text style={{color: textDetail, textDecorationLine: 'underline'}}>Term and conditions</Text> of Memender</Text>
         </View>
-          {btns}
+        {btns}
         </View>
         )}
       </View>
@@ -217,16 +258,29 @@ export default connect(mapStateToProps, mapDispatchToProps)(Login)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: lightColor,
+    backgroundColor: 'white',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: hp('100%')
+  },
+  wrapper: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 40,
+    marginBottom: 30
+  },
+  carouselContainer: {
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    height: hp('65%')
   },
   terms: {
     flexDirection: 'row',
     width: wp('70%'),
     alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 15
+    justifyContent: 'space-around',
+    marginBottom: 20
   },
   btnContainer:{
     justifyContent: 'center',
@@ -253,13 +307,14 @@ const styles = StyleSheet.create({
     height: hp('75%'),
     backgroundColor: 'white',
     borderRadius: 5,
-    zIndex: 0
+    zIndex: 0,
   },
   logo: {
-    height: 50,
-    width: 210,
+    height: 35,
+    width: 226,
     alignSelf: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 20
   },
   votesContainer: {
     justifyContent: 'center',
@@ -282,8 +337,24 @@ const styles = StyleSheet.create({
   },
   textCard: {
     fontSize: 18,
-    color: mainColor2,
-    width: wp('75%')
-  }
+    color: '#A7A7A7',
+    width: wp('75%'),
+    fontFamily: mainFont,
+    textAlign: 'center',
+    marginBottom: 20
+  },
+
+
+  cardSwipe: {
+    backgroundColor: 'white',
+  },
+
+  images: {
+    resizeMode: "contain",
+    alignSelf: 'stretch',
+    flex: 1,
+    height: undefined,
+    width: undefined
+  },
 
 })

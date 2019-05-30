@@ -34,7 +34,7 @@ import SaveIcon from '../components/SaveIcon';
 import UserCard from '../components/UserCard'
 
 
-import {mainColor, mainColor2, details, lightColor} from '../utils/colors'
+import {mainColor, mainColor2, details, lightColor, mainFont} from '../utils/colors'
 
 
 
@@ -379,29 +379,31 @@ renderFooter = () => {
 
                  <View style={styles.votesContainer}>
                   <View style={styles.votes}>
-                    <TouchableOpacity style={styles.iconButton}>
-                      <Text style={[styles.textVotes, styles.upvote, styles.icon]} onPress={() => {
-                      this.swiper.swipeRight();
-                      }}>
-                      {meme.upvote} ❤️
+                    <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}} onPress={() => {
+                    this.swiper.swipeRight();
+                    }}>
+                      <Text style={[styles.textVotes, styles.upvote, styles.icon]} >
+                      {meme.upvote}
                       </Text>
+                      <Image source={require('../assets/love.png')} style={styles.loveIcon}/>
                     </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => {
+                  <TouchableOpacity  onPress={() => {
                     this.handleShare(meme)
                   }}>
-                    <Text style={[styles.textVotes, styles.upvote, styles.icon]}>
-                      🎁
-                    </Text>
+
+                      <Image source={require('../assets/share.png')} style={styles.shareIcon}/>
+
                   </TouchableOpacity>
 
-                  <TouchableOpacity>
-                    <Text style={[styles.textVotes, styles.downvote, styles.icon]} onPress={() => {
-                      // this.handleDownvote(meme)
-                      this.swiper.swipeLeft();
-                      }}>
-                        {meme.downvote} 👎
+                  <TouchableOpacity style={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}} onPress={() => {
+                    // this.handleDownvote(meme)
+                    this.swiper.swipeLeft();
+                    }}>
+                    <Text style={[styles.textVotes, styles.downvote, styles.icon]} >
+                        {meme.downvote}
                     </Text>
+                     <Image source={require('../assets/unlove.png')} style={styles.unloveIcon}/>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -433,11 +435,12 @@ renderFooter = () => {
         }
 
 
-      <View style={styles.footerContainer}>
+    {/*  <View style={styles.footerContainer}>
       <TouchableOpacity style={styles.footer} onPress={this.submit}>
        <Text style={styles.footerTitle}>Add yours</Text>
      </TouchableOpacity>
       </View>
+      */}
 
       <DropdownAlert ref={ref => this.dropdown = ref} />
       </View>
@@ -547,11 +550,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: wp('70%')
+    width: wp('70%'),
+  },
+  loveIcon: {
+    width: 23,
+    height: 20,
+  },
+  unloveIcon: {
+    width: 23,
+    height: 27,
+  },
+  shareIcon: {
+    width: 24,
+    height: 26
   },
   icon: {
-    padding: 15,
     fontSize: 17,
+    padding: 3,
+    fontFamily: mainFont,
+    color: mainColor2,
   },
   saveWrapper: {
     justifyContent: 'center',

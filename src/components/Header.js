@@ -81,9 +81,6 @@ sortOrder = (order) => {
         </TouchableOpacity>
         <Image source={logo} style={styles.logo}/>
 
-
-
-
         {rightBtn}
 
         </View>
