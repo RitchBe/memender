@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, Button, Platform, StyleSheet, TouchableOpacity, Image, FlatList, Share, Modal } from 'react-native';
 import {connect} from 'react-redux';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import Icon from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/Octicons';
 import {mainColor, mainColor2, details, logo, menuHamburger} from '../utils/colors'
 import LinearGradient from "react-native-linear-gradient";
 
@@ -37,7 +37,7 @@ sortOrder = (order) => {
        rightBtn =
                <View style={{zIndex: 500000}}>
                <TouchableOpacity onPress={this.showModal}>
-                <Icon name="award" size={25} color={mainColor2} style={{marginRight: 15}}/>
+                {/*<Icon name="award" size={25} color={mainColor2} style={{marginRight: 15}}/>*/}
               </TouchableOpacity>
               <Modal visible={this.state.modalOpen} transparent={false} animationType='none'>
                 <LinearGradient colors={[mainColor,mainColor2]} style={{flex: 1}} >
@@ -81,7 +81,10 @@ sortOrder = (order) => {
         </TouchableOpacity>
         <Image source={logo} style={styles.logo}/>
 
-        {rightBtn}
+          <TouchableOpacity style={styles.infoBtn} onPress={this.props.onGoToInfo}>
+            <Icon name="info" size={28} color={mainColor2} />
+          </TouchableOpacity>
+
 
         </View>
       </View>
@@ -149,5 +152,8 @@ const styles = StyleSheet.create({
   },
   btnSort: {
     padding: 15,
+  },
+  infoBtn: {
+    padding: 15
   }
 })

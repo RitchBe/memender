@@ -169,6 +169,11 @@ class Following extends Component {
       return null;
     }
   }
+
+  goToInfo = () => {
+    this.props.navigation.navigate('Info');
+  }
+
   render() {
     const {savedMemes} = this.state;
     console.log(savedMemes)
@@ -193,7 +198,7 @@ class Following extends Component {
     }
     return (
       <View style={styles.savedMemesContainer}>
-        <Header onOpenDrawer={this.openDrawer} saved={true} />
+        <Header onOpenDrawer={this.openDrawer} saved={true} onGoToInfo={this.goToInfo} />
         {content}
       </View>
     );
@@ -257,6 +262,12 @@ const styles = StyleSheet.create({
   placeholderText: {
     color: mainColor2,
     fontWeight: 'bold'
+  },
+
+  noSavedMeme: {
+    backgroundColor: 'white',
+    height: hp('100%'),
+    width: wp('100%'),
   }
 
 });

@@ -142,6 +142,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-view-overflow')
     implementation project(':react-native-linear-gradient')
     implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-fbads')

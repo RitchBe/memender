@@ -33,6 +33,8 @@ import Header from '../components/Header';
 import SaveIcon from '../components/SaveIcon';
 import UserCard from '../components/UserCard'
 
+import MenuDrawer from 'react-native-side-drawer'
+
 
 import {mainColor, mainColor2, details, lightColor, mainFont} from '../utils/colors'
 
@@ -200,7 +202,7 @@ class Home extends Component {
         if (accessToken) {
           if (!this.state.fetching_from_server) {
             this.setState({fetching_from_server: true}, () => {
-              fetch('https://www.memender.io/api/memes/' + this.props.userSub + '/' + this.state.order + '?next=' + this.state.countBest, {
+              fetch('https://www.memender.io/api/memes/' + this.props.userSub + '/' + this.props.order + '?next=' + this.state.countBest, {
                 method: 'GET',
                 headers: new Headers({
                   'Content-Type': 'application/json',
@@ -287,6 +289,10 @@ openDrawer = () => {
   this.props.navigation.toggleDrawer();
 }
 
+goToInfo = () => {
+  this.props.navigation.navigate('Info');
+}
+
 renderItem = ({item}) => (
   <UserCard item={item} onDelete={this.deleteMeme}/>
 )
@@ -299,14 +305,44 @@ renderFooter = () => {
   }
 }
 
+componentDidUpdate(prevProps) {
+  if(prevProps.order !== this.props.order){
+  if (this.props.order === 'random') {
+    this.setState({
+      memesTest: [],
+      countBest: 0
+    });
+    this.fetchMemes()
+  } else if (this.props.order === 'bestOfAllTime') {
+    this.setState({
+      memesTest: [],
+      countBest: 0
+    });
+    this.getSortedMeme('bestOfAllTime')
+  } else if (this.props.order === "monthlyBest") {
+    this.setState({
+      memesTest: [],
+      countBest: 0
+    });
+    this.getSortedMeme('monthlyBest')
+  } else if (this.props.order === "weeklyBest") {
+    this.setState({
+      memesTest: [],
+      countBest: 0
+    });
+    this.getSortedMeme('weeklyBest')
+
+  }
+}
+}
   render() {
     var cl = new cloudinary.Cloudinary({cloud_name: "db7eqzno0", secure: true, context: true,image_metadata: "true"});
     const {memesTest, fadeAnim} = this.state;
 
     return (
       <View style={styles.container}>
-        <Header  style={{shadowOffset: { width: 10, height: 10 },  shadowColor: 'black', shadowOpacity: 1.0, elevation: 3, backgroundColor: 'black'}} onOpenDrawer={this.openDrawer} home={true} sortMemes={(order) => {this.sortMemes(order)}}/>
-        {this.state.order === 'random' &&
+        <Header  style={{shadowOffset: { width: 10, height: 10 },  shadowColor: 'black', shadowOpacity: 1.0, elevation: 3, backgroundColor: 'black'}} onOpenDrawer={this.openDrawer} onGoToInfo={this.goToInfo} home={true} sortMemes={(order) => {this.sortMemes(order)}}/>
+        {this.props.order === 'random' &&
           <CardStack style={styles.content}  renderNoMoreCards={() =>
             <ActivityIndicator color={mainColor2} style={{margin: 100}} size="large" />} ref={swiper => {
             this.swiper = swiper
@@ -417,7 +453,7 @@ renderFooter = () => {
       </CardStack>
         }
 
-        {this.state.order != 'random' &&
+        {this.props.order != 'random' &&
           <View style={styles.topList}>
             <FlatList
               style={{flex:1}}
@@ -431,6 +467,8 @@ renderFooter = () => {
               initialNumToRender={10}
               ListFooterComponent={this.renderFooter}
             />
+            <LinearGradient colors={['rgba(0,0,0,0)','#EFE4F7']} style={styles.bottomGradient} >
+            </LinearGradient>
           </View>
         }
 
@@ -464,7 +502,8 @@ function uploadFile(file) {
 
 function mapStateToProps(state){
   return {
-    userSub: state.userSub
+    userSub: state.userSub,
+    order: state.order
   }
 }
 
@@ -620,6 +659,13 @@ const styles = StyleSheet.create({
     width: wp('100%'),
     fontSize: 30,
     zIndex: 100
+  },
+  bottomGradient: {
+    height: hp('15%'),
+    width: wp('100%'),
+    position: 'absolute',
+    bottom: 0
+
   }
 
 })

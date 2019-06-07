@@ -21,7 +21,8 @@ const auth0 = new Auth0({
 
 const initialState = {
   userSub: '',
-  userIsLogged: false
+  userIsLogged: false,
+  order: 'random',
 }
 
 
@@ -56,6 +57,12 @@ export const reducer = (state=initialState, action) => {
         userIsLogged: false,
         userSub: ''
       }
+
+    case "CHANGE_ORDER":
+      console.log('changin')
+      console.log(action.order)
+      state = Object.assign({}, state, {order: action.order})
+      return state
   }
 
   return state

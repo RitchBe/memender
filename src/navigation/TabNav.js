@@ -12,6 +12,8 @@ import SavedMemes from '../screens/SavedMemes'
 import Following from '../screens/Following'
 import AddMemeButton from '../components/AddMemeButton'
 
+import HomeDrawer from '../screens/HomeDrawer';
+
 import Drawer from './Drawer'
 
 
@@ -28,7 +30,7 @@ import { createBottomTabNavigator, SafeAreaView } from 'react-navigation';
 const TabNav = createBottomTabNavigator(
   {
     Home: {
-      screen: HomeScreen,
+      screen: HomeDrawer,
       navigationOptions: ({navigation}) => ({
         tabBarIcon: ({tintColor, focused}) => (
           focused ?
@@ -74,6 +76,14 @@ const TabNav = createBottomTabNavigator(
             <Image source={require('../assets/searchFocused.png')} style={{width: 20, height: 20}} />
             :
             <Image source={require('../assets/search.png')} style={{width: 20, height: 20}} />
+        )
+      })
+    },
+    Info: {
+      screen: Info,
+      navigationOptions: () => ({
+        tabBarButtonComponent: () => (
+          null
         )
       })
     }

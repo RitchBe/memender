@@ -48,7 +48,7 @@ class Uploaded extends Component {
   }
 
   renderItem = ({item}) => (
-    <UserCard item={item} onDelete={this.deleteMeme}/>
+    <UserCard item={item} onDelete={this.deleteMeme} userMeme={true}/>
   )
 
   fetchUserMemes = () => {
@@ -178,6 +178,10 @@ class Uploaded extends Component {
       return null;
     }
   }
+  
+  goToInfo = () => {
+    this.props.navigation.navigate('Info');
+  }
 
   // next: add code for rendering the component
   render() {
@@ -203,7 +207,7 @@ class Uploaded extends Component {
 
    return (
      <View style={styles.list}>
-    <Header onOpenDrawer={this.openDrawer} uploaded={true}/>
+    <Header onOpenDrawer={this.openDrawer} uploaded={true} onGoToInfo={this.goToInfo}/>
       {content}
      </View>
    );

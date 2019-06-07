@@ -6,6 +6,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
+import com.entria.views.RNViewOverflowPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import suraj.tiwari.reactnativefbads.FBAdsPackage;
@@ -47,6 +48,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNViewOverflowPackage(),
             new LinearGradientPackage(),
             new PickerPackage(),
             new FBAdsPackage(),

@@ -10,7 +10,7 @@ import {
   ScrollView
 } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-
+import {mainColor, mainColor2, details, lightColor, mainFont} from '../utils/colors'
 
 
 export default class UserCard extends PureComponent {
@@ -26,11 +26,24 @@ export default class UserCard extends PureComponent {
       <View  key={item._id} style={styles.memeContainer}>
         <Image style={styles.images} source={{uri: item.url}}/>
         <View style={styles.votes}>
-          <Text style={[styles.textVotes, styles.upvote, styles.icon]}>{item.upvote} ❤️</Text>
-          <Text style={[styles.textVotes, styles.downvote, styles.icon]}>{item.downvote} 👎</Text>
-          <TouchableOpacity onPress={this.handleDelete}>
-            <Text style={styles.icon}>🗑️</Text>
-          </TouchableOpacity>
+
+          <View style={styles.votesContainer}>
+            <Image source={require('../assets/love.png')} style={styles.loveIcon}/>
+            <Text style={[styles.textVotes, styles.upvote, styles.icon]}>{item.upvote}</Text>
+          </View>
+
+          <View style={styles.votesContainer}>
+            <Image source={require('../assets/unlove.png')} style={styles.unloveIcon}/>
+            <Text style={[styles.textVotes, styles.upvote, styles.icon]}>{item.downvote}</Text>
+          </View>
+
+        {this.props.userMeme &&
+            <TouchableOpacity onPress={this.handleDelete}>
+              <Text style={styles.icon}>🗑️</Text>
+            </TouchableOpacity>
+          }
+
+
         </View>
 
       </View>
@@ -54,10 +67,14 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     alignSelf: 'stretch',
     flex: 1,
-    height: hp('40%'),
+    height: hp('30%'),
     width: wp('80%')
   },
-
+  votesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   votes: {
     width: 200,
     flexDirection: 'row',
@@ -66,7 +83,17 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   icon: {
-    padding: 15,
     fontSize: 17,
-  }
+    padding: 3,
+    fontFamily: mainFont,
+    color: mainColor2,
+  },
+  loveIcon: {
+    width: 23,
+    height: 20,
+  },
+  unloveIcon: {
+    width: 23,
+    height: 27,
+  },
 })
